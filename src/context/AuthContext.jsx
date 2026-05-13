@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { loginRequest, getLabsRequest } from "../api/auth";
+import { Navigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -33,6 +34,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+    setUser(null)
+    setIsAuthenticated(false)
+    Navigate("/login")
+    
+  }
+
   const getlabs = async() => {
     try {
     const res = await getLabsRequest()
@@ -58,9 +66,12 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login,
+        logout,
         isAuthenticated,
         errors,
         getlabs,
+        labs
+
       }}
     >
       {children}

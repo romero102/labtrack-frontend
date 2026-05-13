@@ -1,7 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
+  const { user } = useAuth()
+  console.log(user)
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
@@ -46,6 +49,9 @@ function Navbar() {
             <Link to="/users" className={linkClass("/users")}>
               Users
             </Link>
+            <Link to="/users" className={linkClass("/users")}>
+              {user.user.name}
+            </Link>
           </div>
         </div>
 
@@ -63,6 +69,9 @@ function Navbar() {
             </Link>
             <Link to="/users" className={linkClass("/users")}>
               Users
+            </Link>
+            <Link to="/users" className={linkClass("/users")}>
+              {user.user.name}
             </Link>
           </div>
         )}

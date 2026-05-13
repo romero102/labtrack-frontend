@@ -1,6 +1,12 @@
 import { Search, SquarePen, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Laboratories() {
+
+  const {labs, getlabs} = useAuth()
+  console.log(labs)
+
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -15,12 +21,10 @@ function Laboratories() {
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
         </form>
-        <button
-          type="button"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
-        >
+        <Link to="/laboratoryform" 
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
           Add laboratory
-        </button>
+        </Link>
       </div>
 
       <table className="w-full text-left">
