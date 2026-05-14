@@ -15,8 +15,8 @@ import MaintenanceForm from "./pages/MaintenanceForm";
 
 function App() {
   return (
-    <AuthProvider>
       <BrowserRouter>
+    <AuthProvider>
         <Toaster position="top-right" reverseOrder={false} />
         <Routes>
             <Route path="/" element={<h1>Home page</h1>}></Route>
@@ -35,8 +35,8 @@ function App() {
             ></Route>
           </Route>
         </Routes>
-      </BrowserRouter>
     </AuthProvider>
+      </BrowserRouter>
   );
 }
 

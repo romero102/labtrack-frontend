@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { loginRequest, getLabsRequest } from "../api/auth";
-import { Navigate } from "react-router-dom";
+import { loginRequest, logoutRequest, getLabsRequest } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -34,12 +34,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null)
-    setIsAuthenticated(false)
-    Navigate("/login")
-    
-  }
+  const navigate = useNavigate()
+
+  const logout = async () => {
+    try {
+      await logoutRequest(); // llama al backend
+      setUser(null);
+      setIsAuthenticated(false);
+      navigate("/login"); // redirige
+    } catch (error) {
+      const newErrors =
+        error.response?.data?.errors ||
+        (error.response?.data?.message && [error.response.data.message]) || [
+          error.message,
+        ];
+      setErrors(newErrors);
+    }
+  };
 
   const getlabs = async() => {
     try {

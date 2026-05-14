@@ -4,4 +4,6 @@ const API = "http://localhost:5000/api"
 
 export const loginRequest = (user) => axios.post(`${API}/auth/login`, user)
 
+export const logoutRequest = () => axios.post(`${API}/auth/logout`)
+
 export const getLabsRequest = () => axios.get(`${API}/labs`)
