@@ -1,11 +1,16 @@
 import { Search, SquarePen, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 function Laboratories() {
+  const { labs, getLabs, deleteLab } = useAuth();
 
-  const {labs, getlabs} = useAuth()
-  console.log(labs)
+  useEffect(() => {
+    getLabs();
+  }, []);
+
+  if(labs.length === 0) return(<h1>No laboratories</h1>)
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -21,8 +26,10 @@ function Laboratories() {
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
         </form>
-        <Link to="/laboratoryform" 
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+        <Link
+          to="/laboratoryform"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+        >
           Add laboratory
         </Link>
       </div>
@@ -30,28 +37,37 @@ function Laboratories() {
       <table className="w-full text-left">
         <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
           <tr>
-            <th className="px-6 py-3">Laboratory</th>
+            <th className="px-6 py-3">Name</th>
+            <th className="px-6 py-3">Location</th>
             <th className="px-6 py-3">Number of computers</th>
-            <th className="px-6 py-3">Responsible</th>
             <th className="px-6 py-3 text-center">Actions</th>
           </tr>
         </thead>
 
         <tbody className="text-gray-700">
-          <tr className="border-t hover:bg-gray-50 transition">
-            <td className="px-6 py-4">A 102</td>
-            <td className="px-6 py-4">42</td>
-            <td className="px-6 py-4">Marcos</td>
-            <td className="px-6 py-4 flex justify-center gap-4">
-              <button className="text-blue-600 hover:text-blue-800 transition">
-                <SquarePen className="w-5 h-5" />
-              </button>
+          {labs.map((lab) => (
+            <tr key={lab._id} className="border-t hover:bg-gray-50 transition">
+              <td className="px-6 py-4">{lab.name}</td>
 
-              <button className="text-red-600 hover:text-red-800 transition">
-                <Trash2 className="w-5 h-5" />
-              </button>
-            </td>
-          </tr>
+              <td className="px-6 py-4">{lab.location}</td>
+
+              <td className="px-6 py-4">{lab.computerCount}</td>
+
+              <td className="px-6 py-4 flex justify-center gap-4">
+                <Link to={`/laboratoryform/${lab._id}`}
+                className="text-blue-600 hover:text-blue-800 transition">
+                <SquarePen className="w-5 h-5" />
+                </Link>
+
+                <button className="text-red-600 hover:text-red-800 transition"
+                onClick={()=>{
+                  deleteLab(lab._id)
+                }}>
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

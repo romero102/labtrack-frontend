@@ -1,4 +1,7 @@
 import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 function LaboratoryForm() {
   const {
@@ -7,11 +10,22 @@ function LaboratoryForm() {
     handleSubmit,
   } = useForm();
 
+  const {createLab, getLab} = useAuth()
+  const navigate = useNavigate()
+  const params = useParams()
+
+  useEffect(()=>{
+    if(params.id){
+      getLab(params.id)
+    }
+  },[])
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <form
         onSubmit={handleSubmit((values) => {
-          console.log(values);
+          createLab(values);
+          navigate("/laboratories")
         })}
         className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6"
       >
@@ -57,23 +71,23 @@ function LaboratoryForm() {
           </label>
           <input
             type="number"
-            {...register("computers", {
+            {...register("computerCount", {
               required: "This field is required",
               min: {
                 value: 1,
                 message: "Must be at least 1 computer",
               },
             })}
-            aria-invalid={errors.computers ? "true" : "false"}
+            aria-invalid={errors.computerCount ? "true" : "false"}
             className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-              errors.computers
+              errors.computerCount
                 ? "border-red-500 focus:ring-red-300"
                 : "border-gray-300 focus:ring-blue-300"
             }`}
             placeholder="0"
           />
-          {errors.computers && (
-            <p className="text-red-500 text-sm">{errors.computers.message}</p>
+          {errors.computerCount && (
+            <p className="text-red-500 text-sm">{errors.computerCount.message}</p>
           )}
         </div>
         <button

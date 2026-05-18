@@ -12,31 +12,41 @@ import Laboratories from "./pages/Laboratories";
 import LaboratoryForm from "./pages/LaboratoryForm";
 import Maintenance from "./pages/Maintenance";
 import MaintenanceForm from "./pages/MaintenanceForm";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
-      <BrowserRouter>
-    <AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
         <Toaster position="top-right" reverseOrder={false} />
         <Routes>
-            <Route path="/" element={<h1>Home page</h1>}></Route>
-            <Route path="/login" element={<Login />}></Route>
-          <Route element={<Layout/>}>
-            <Route path="/users" element={<Users />}></Route>
-            <Route path="/userform" element={<UserForm />}></Route>
-            <Route path="/laboratories" element={<Laboratories />}></Route>
-            <Route path="/laboratoryform" element={<LaboratoryForm />}></Route>
-            <Route path="/computers" element={<Computers />}></Route>
-            <Route path="/computerform" element={<ComputerForm />}></Route>
-            <Route path="/maintenance" element={<Maintenance />}></Route>
-            <Route
-              path="/maintenanceform"
-              element={<MaintenanceForm />}
-            ></Route>
+          <Route path="/" element={<h1>Home page</h1>}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route element={<ProtectedRoute/>}>
+            <Route element={<Layout />}>
+              <Route path="/users" element={<Users />}></Route>
+              <Route path="/userform" element={<UserForm />}></Route>
+              <Route path="/laboratories" element={<Laboratories />}></Route>
+              <Route
+                path="/laboratoryform"
+                element={<LaboratoryForm />}
+              ></Route>
+              <Route
+                path="/laboratoryform/:id"
+                element={<LaboratoryForm />}
+              ></Route>
+              <Route path="/computers" element={<Computers />}></Route>
+              <Route path="/computerform" element={<ComputerForm />}></Route>
+              <Route path="/maintenance" element={<Maintenance />}></Route>
+              <Route
+                path="/maintenanceform"
+                element={<MaintenanceForm />}
+              ></Route>
+            </Route>
           </Route>
         </Routes>
-    </AuthProvider>
-      </BrowserRouter>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
