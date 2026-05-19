@@ -8,27 +8,47 @@ function LaboratoryForm() {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm();
 
-  const {createLab, getLab} = useAuth()
-  const navigate = useNavigate()
-  const params = useParams()
+  const { createLab, getLab, updateLab, errors: apiErrors, } = useAuth();
+  const navigate = useNavigate();
+  const params = useParams();
 
-  useEffect(()=>{
-    if(params.id){
-      getLab(params.id)
+  useEffect(() => {
+    async function loadLaboratory() {
+      if (params.id) {
+        const laboratory = await getLab(params.id);
+        setValue("name", laboratory.name);
+        setValue("location", laboratory.location);
+        setValue("computerCount", laboratory.computerCount);
+      }
     }
-  },[])
+    loadLaboratory();
+  }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center">
       <form
-        onSubmit={handleSubmit((values) => {
-          createLab(values);
-          navigate("/laboratories")
+        onSubmit={handleSubmit(async (values) => {
+          if (params.id) {
+            await updateLab(params.id, values);
+          } else {
+            await createLab(values);
+          }
+
+          navigate("/labs");
         })}
         className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6"
       >
+        {apiErrors.map((error, i) => (
+          <div
+            key={i}
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-3"
+          >
+            {error}
+          </div>
+        ))}
         <div className="flex flex-col space-y-1">
           <label className="text-sm font-medium text-gray-700">Name</label>
           <input
@@ -87,14 +107,16 @@ function LaboratoryForm() {
             placeholder="0"
           />
           {errors.computerCount && (
-            <p className="text-red-500 text-sm">{errors.computerCount.message}</p>
+            <p className="text-red-500 text-sm">
+              {errors.computerCount.message}
+            </p>
           )}
         </div>
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
         >
-          Register laboratory
+          Save
         </button>
       </form>
     </div>

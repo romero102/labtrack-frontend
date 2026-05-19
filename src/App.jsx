@@ -26,6 +26,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/users" element={<Users />}></Route>
               <Route path="/userform" element={<UserForm />}></Route>
+              <Route path="/userform/:id" element={<UserForm />}></Route>
               <Route path="/laboratories" element={<Laboratories />}></Route>
               <Route
                 path="/laboratoryform"

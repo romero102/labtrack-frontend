@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate} from "react-router-dom";
+import { Eye } from "lucide-react";
+import { EyeClosed } from "lucide-react";
 
 function Login() {
   const {
@@ -15,6 +17,8 @@ function Login() {
   useEffect(() => {
     if (isAuthenticated) navigate("/laboratories");
   }, [isAuthenticated]);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = handleSubmit(async (values) => {
     login(values);
@@ -57,26 +61,39 @@ function Login() {
         </div>
         <div className="flex flex-col space-y-1">
           <label className="text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "It must be at least 6 characters long",
-              },
-            })}
-            aria-invalid={errors.password ? "true" : "false"}
-            className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-              errors.password
-                ? "border-red-500 focus:ring-red-300"
-                : "border-gray-300 focus:ring-blue-300"
-            }`}
-            placeholder="••••••••"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
-          )}
+          <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password", {
+                  required: "the password is required",
+                  minLength: {
+                    value: 6,
+                    message: "It must be at least 8 characters long",
+                  },
+                })}
+                aria-invalid={errors.password ? "true" : "false"}
+                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                  errors.password
+                    ? "border-red-400 focus:ring-red-300"
+                    : "border-gray-300 focus:ring-blue-400"
+                }`}
+                placeholder="********"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3 text-sm text-blue-500"
+              >
+                {showPassword ? <Eye /> : <EyeClosed />}
+              </button>
+            </div>
+
+            {errors.password && (
+              <p role="alert" className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
         </div>
         <button
           type="submit"

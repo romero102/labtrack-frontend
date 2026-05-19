@@ -22,7 +22,8 @@ import {
   getUserRequest,
   createUserRequest,
   updateUserRequest,
-  deleteUserRequest
+  deleteUserRequest,
+  restoreUserRequest,
 } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +42,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [labs, setLabs] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const login = async (user) => {
     try {
@@ -49,11 +51,13 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      const newErrors = error.response?.data?.errors ||
-        (error.response?.data?.message && [error.response.data.message]) || [
-          error.message,
-        ];
-      setErrors(newErrors);
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
     }
   };
 
@@ -66,65 +70,190 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       navigate("/login"); // redirige
     } catch (error) {
-      const newErrors = error.response?.data?.errors ||
-        (error.response?.data?.message && [error.response.data.message]) || [
-          error.message,
-        ];
-      setErrors(newErrors);
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
     }
   };
+
+  //----------------laboratories
 
   const getLabs = async () => {
     try {
       const res = await getLabsRequest();
       setLabs(res.data.data);
     } catch (error) {
-      const newErrors = error.response?.data?.errors ||
-        (error.response?.data?.message && [error.response.message]) || [
-          error.message,
-        ];
-      setErrors(newErrors);
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
     }
   };
 
   const getLab = async (id) => {
     try {
-      await getLabRequest(id)
+      const res = await getLabRequest(id);
+      return res.data.data;
     } catch (error) {
-      const newErrors = error.response?.data?.errors ||
-        (error.response?.data?.message && [error.response.message]) || [
-          error.message,
-        ];
-      setErrors(newErrors);
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
     }
-  }
+  };
 
   const createLab = async (lab) => {
     try {
-      await createLabRequest(lab)
+      await createLabRequest(lab);
     } catch (error) {
-      const newErrors = error.response?.data?.errors ||
-        (error.response?.data?.message && [error.response.data.message]) || [
-          error.data.message,
-        ];
-      setErrors(newErrors);
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
     }
-  }
+  };
 
   const deleteLab = async (id) => {
     try {
-      const res = await deleteLabRequest(id)
-      if(res.status === 200) setLabs(labs.filter(lab => lab._id != id))
-        console.log(res.data)
+      const res = await deleteLabRequest(id);
+      if (res.status === 200) setLabs(labs.filter((lab) => lab._id != id));
     } catch (error) {
-      const newErrors = error.response?.data?.errors ||
-        (error.response?.data?.message && [error.response.data.message]) || [
-          error.data.message,
-        ];
-      setErrors(newErrors);
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
     }
-    
-  }
+  };
+
+  const updateLab = async (id, lab) => {
+    try {
+      await updateLabRequest(id, lab);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+  //--------------users
+  const getUsers = async () => {
+    try {
+      const res = await getUsersRequest();
+      setUsers(res.data.data);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const getUser = async (id) => {
+    try {
+      const res = await getUserRequest(id);
+      return res.data.data;
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const createUser = async (user) => {
+    try {
+      await createUserRequest(user);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+      console.log(error.response.data);
+      throw error;
+    }
+  };
+
+  const deleteUser = async (id) => {
+    try {
+      const res = await deleteUserRequest(id);
+      if (res.status === 200) {
+      setUsers(
+        users.map((user) =>
+          user._id === id ? res.data.data : user
+        )
+      );
+    }
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const restoreUser = async (id) => {
+    try {
+      const res = await restoreUserRequest(id);
+      if (res.status === 200) {
+      setUsers(
+        users.map((user) =>
+          user._id === id ? res.data.data : user
+        )
+      );
+    }
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const updateUser = async (id, user) => {
+    try {
+      await updateUserRequest(id, user);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
 
   useEffect(() => {
     if (errors.length > 0) {
@@ -136,30 +265,28 @@ export const AuthProvider = ({ children }) => {
   }, [errors]);
 
   useEffect(() => {
-  const checkLogin = async () => {
-    try {
-      const res = await verifyTokenRequest();
+    const checkLogin = async () => {
+      try {
+        const res = await verifyTokenRequest();
 
-      if (!res.data) {
+        if (!res.data) {
+          setIsAuthenticated(false);
+          setUser(null);
+          return;
+        }
+
+        setIsAuthenticated(true);
+        setUser(res.data);
+      } catch (error) {
         setIsAuthenticated(false);
         setUser(null);
-        return;
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setIsAuthenticated(true);
-      setUser(res.data);
-
-    } catch (error) {
-      setIsAuthenticated(false);
-      setUser(null);
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  checkLogin();
-}, []);
+    checkLogin();
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -170,11 +297,19 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         loading,
         errors,
+        labs,
         getLabs,
         getLab,
-        labs,
         createLab,
         deleteLab,
+        updateLab,
+        users,
+        getUsers,
+        getUser,
+        createUser,
+        deleteUser,
+        restoreUser,
+        updateUser,
       }}
     >
       {children}
