@@ -1,7 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Select from "react-select";
 
@@ -24,17 +24,23 @@ function ComputerForm() {
   const navigate = useNavigate();
   const params = useParams();
 
+  const [loadingComputer, setLoadingComputer] = useState(true);
+
   useEffect(() => {
     async function loadComputer() {
-      if (params.id) {
+      try {
+        if (params.id) {
         const computer = await getComputer(params.id);
         setValue("code", computer.code);
-        setValue("lab", computer.lab);
+        setValue("lab", computer.lab._id || computer.lab);
         setValue("processor", computer.processor);
         setValue("ram", computer.ram);
         setValue("storage", computer.storage);
         setValue("graphics", computer.graphics);
       }
+      } finally {
+      setLoadingComputer(false);
+    }
     }
     loadComputer();
   }, []);
@@ -43,6 +49,16 @@ function ComputerForm() {
     value: lab._id,
     label: lab.name,
   }));
+
+  if (loadingComputer && params.id) {
+  return (
+  <div className="min-h-screen flex items-center justify-center">
+      <h1 className="text-xl font-semibold text-gray-700 animate-pulse">
+        Loading computer...
+      </h1> 
+  </div>
+);
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -89,7 +105,7 @@ function ComputerForm() {
         </div>
         <div className="flex flex-col space-y-1">
           <label className="text-sm font-medium text-gray-700">
-            Laboratory <span className="text-red-500">*</span>
+            Laboratory
           </label>
           <Controller
             name="lab"
@@ -212,7 +228,7 @@ function ComputerForm() {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/laboratories")}
+            onClick={() => navigate("/computers")}
             className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg"
           >
             Cancel

@@ -10,6 +10,7 @@ function Users() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [action, setAction] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     getUsers();
@@ -26,15 +27,17 @@ function Users() {
         : restoreUser(selectedUser._id);
 
     toast.promise(promise, {
-      loading: action === "deactivate"
-        ? "Deactivating user..."
-        : "Activating user...",
-      success: action === "deactivate"
-        ? "User deactivated"
-        : "User activated",
+      loading:
+        action === "deactivate" ? "Deactivating user..." : "Activating user...",
+      success: action === "deactivate" ? "User deactivated" : "User activated",
       error: "Something went wrong",
     });
   };
+
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -45,7 +48,9 @@ function Users() {
         <form className="relative max-w-md">
           <input
             type="text"
-            placeholder="Find a user...?"
+            placeholder="Find a user..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
@@ -72,7 +77,7 @@ function Users() {
         </thead>
 
         <tbody className="text-gray-700">
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user._id} className="border-t hover:bg-gray-50 transition">
               <td className="px-6 py-4">{user.name}</td>
               <td className="px-6 py-4">{user.email}</td>
@@ -89,37 +94,38 @@ function Users() {
                   {user.isActive ? "Active" : "Inactive"}
                 </span>
               </td>
-              <td className="px-6 py-4 flex justify-center gap-4">
-                <Link
-                  to={`/userform/${user._id}`}
-                  className="text-blue-600 hover:text-blue-800 transition"
-                >
-                  <SquarePen className="w-5 h-5" />
-                </Link>
-
-                {user.isActive ? (
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition"
-                    onClick={() => {
-                      setSelectedUser(user);
-                      setAction("deactivate");
-                      setModalOpen(true);
-                    }}
+              <td className="px-6 py-4">
+                <div className="flex justify-center gap-4">
+                  <Link
+                    to={`/userform/${user._id}`}
+                    className="text-blue-600 hover:text-blue-800 transition flex items-center"
                   >
-                    Deactivate
-                  </button>
-                ) : (
-                  <button
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm transition"
-                    onClick={() => {
-                      setSelectedUser(user);
-                      setAction("activate");
-                      setModalOpen(true);
-                    }}
-                  >
-                    Activate
-                  </button>
-                )}
+                    <SquarePen className="w-5 h-5" />
+                  </Link>
+                  {user.isActive ? (
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition"
+                      onClick={() => {
+                        setSelectedUser(user);
+                        setAction("deactivate");
+                        setModalOpen(true);
+                      }}
+                    >
+                      Deactivate
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm transition"
+                      onClick={() => {
+                        setSelectedUser(user);
+                        setAction("activate");
+                        setModalOpen(true);
+                      }}
+                    >
+                      Activate
+                    </button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}
@@ -138,4 +144,3 @@ function Users() {
 }
 
 export default Users;
-

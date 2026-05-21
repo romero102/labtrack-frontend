@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 function LaboratoryForm() {
@@ -16,17 +16,34 @@ function LaboratoryForm() {
   const navigate = useNavigate();
   const params = useParams();
 
+  const [loadingLaboratory, setLoadingLaboratory] = useState(true);
+
   useEffect(() => {
     async function loadLaboratory() {
-      if (params.id) {
+      try {
+        if (params.id) {
         const laboratory = await getLab(params.id);
         setValue("name", laboratory.name);
         setValue("location", laboratory.location);
         setValue("computerCount", laboratory.computerCount);
       }
+      } finally {
+      setLoadingLaboratory(false);
+    }  
+      
     }
     loadLaboratory();
   }, []);
+
+  if (loadingLaboratory && params.id) {
+  return (
+  <div className="min-h-screen flex items-center justify-center">
+      <h1 className="text-xl font-semibold text-gray-700 animate-pulse">
+        Loading Laboratory...
+      </h1> 
+  </div>
+);
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center">

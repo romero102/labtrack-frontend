@@ -15,7 +15,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/laboratories");
+    if (isAuthenticated) navigate("/computers");
   }, [isAuthenticated]);
 
   const [showPassword, setShowPassword] = useState(false);

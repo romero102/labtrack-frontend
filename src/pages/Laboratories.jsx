@@ -9,6 +9,7 @@ function Laboratories() {
   const { labs, getLabs, deleteLab } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedLab, setSelectedLab] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     getLabs();
@@ -38,6 +39,10 @@ function Laboratories() {
     });
   };
 
+  const filteredLabs = labs.filter((lab) =>
+    lab.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -47,7 +52,9 @@ function Laboratories() {
         <form className="relative max-w-md">
           <input
             type="text"
-            placeholder="Find a laboratory...?"
+            placeholder="Find a laboratory..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
@@ -70,13 +77,14 @@ function Laboratories() {
         </thead>
 
         <tbody className="text-gray-700">
-          {labs.map((lab) => (
+          {filteredLabs.map((lab) => (
             <tr key={lab._id} className="border-t hover:bg-gray-50 transition">
               <td className="px-6 py-4">{lab.name}</td>
               <td className="px-6 py-4">{lab.location}</td>
               <td className="px-6 py-4">{lab.computerCount}</td>
-              <td className="px-6 py-4 flex justify-center gap-4">
-                <Link
+              <td className="px-6 py-4">
+                <div className="flex justify-center gap-4">
+                  <Link
                   to={`/laboratoryform/${lab._id}`}
                   className="text-blue-600 hover:text-blue-800 transition"
                 >
@@ -92,6 +100,7 @@ function Laboratories() {
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
+                </div>
               </td>
             </tr>
           ))}

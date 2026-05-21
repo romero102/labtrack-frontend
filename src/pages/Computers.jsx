@@ -1,32 +1,40 @@
 import { Search, SquarePen, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
+import ComputerQr from "../components/ComputerQr";
+import { ScanQrCode } from "lucide-react";
+import { SquarePlus } from 'lucide-react';
 
 function Computers() {
   const { computers, getComputers, deleteComputer } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedComputer, setSelectedComputer] = useState(null);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("")
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getComputers();
   }, []);
 
-  console.log(computers)
+  console.log(computers);
 
-  if (computers.length === 0) return(
-    <div className="mb-6 flex justify-between">
-      <h1>No Computers</h1>
-      <Link
+  if (computers.length === 0)
+    return (
+      <div className="mb-6 flex justify-between">
+        <h1>No Computers</h1>
+        <Link
           to="/computerform"
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
         >
           Add computer
         </Link>
-    </div>
-  );
+      </div>
+    );
 
   const handleConfirmDelete = async () => {
     setModalOpen(false);
@@ -40,6 +48,20 @@ function Computers() {
     });
   };
 
+  const handleDownload = async (url, filename) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
+  const filteredComputers = computers.filter((computer) =>
+    computer.code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -49,7 +71,9 @@ function Computers() {
         <form className="relative max-w-md">
           <input
             type="text"
-            placeholder="Find a computer...?"
+            placeholder="Find a computer..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
@@ -71,14 +95,13 @@ function Computers() {
             <th className="px-6 py-3">Storage</th>
             <th className="px-6 py-3">Graphics</th>
             <th className="px-6 py-3">Qr</th>
-            <th className="px-6 py-3">Qr</th>
-            <th className="px-6 py-3">Qr</th>
+            <th className="px-6 py-3">Maintenance</th>
             <th className="px-6 py-3 text-center">Actions</th>
           </tr>
         </thead>
 
         <tbody className="text-gray-700">
-          {computers.map((computer) => (
+          {filteredComputers.map((computer) => (
             <tr
               key={computer._id}
               className="border-t hover:bg-gray-50 transition"
@@ -90,43 +113,45 @@ function Computers() {
               <td className="px-6 py-4">{computer.storage}</td>
               <td className="px-6 py-4">{computer.graphics}</td>
               <td className="px-6 py-4">
-                <img
-                  src={computer.qrImage}
-                  alt="QR Code"
-                  className="w-20 h-20"
-                />
-              </td>
-              <td className="px-6 py-4">
-                <a
-                  href={computer.qrImage}
-                  download={`qr_${computer._id}.png`}
+                <div className="flex gap-4">
+                  <button
+                  className="text-green-600 hover:text-green-800 transition"
+                  onClick={() => {
+                    setSelectedComputer(computer);
+                    setQrModalOpen(true);
+                  }}
+                >
+                  <ScanQrCode />
+                </button>
+                <button
+                  onClick={() =>
+                    handleDownload(computer.qrImage, `qr_${computer.code}.png`)
+                  }
                   className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm mr-2"
                 >
                   Download
-                </a>
+                </button>
+                </div>
               </td>
               <td className="px-6 py-4">
-                <button
-                  className="bg-green-500 text-white px-3 py-1 rounded-md text-sm"
-                  onClick={() => {
-                    const printWindow = window.open("", "_blank");
-                    printWindow.document.write(`
-            <html>
-              <head><title>Print QR</title></head>
-              <body style="display:flex;justify-content:center;align-items:center;height:100vh;">
-                <img src="${computer.qrImage}" style="max-width:100%;height:auto;" />
-                <script>window.print();</script>
-              </body>
-            </html>
-          `);
-                    printWindow.document.close();
-                  }}
+                <div className="flex gap-4">
+                  <Link
+                  to={`/maintenanceform/${computer._id}`}
+                  className="text-blue-600 hover:text-blue-800 transition flex items-center"
                 >
-                  Print
+                  <SquarePlus className="w-5 h-5" />
+                </Link>
+                <button
+                  onClick={() => {navigate("/maintenance")}}
+                  className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm mr-2"
+                >
+                  History
                 </button>
+                </div>
               </td>
-              <td className="px-6 py-4 flex justify-center gap-4">
-                <Link
+              <td className="px-6 py-4">
+                <div className="flex justify-center gap-4">
+                  <Link
                   to={`/computerform/${computer._id}`}
                   className="text-blue-600 hover:text-blue-800 transition"
                 >
@@ -142,6 +167,7 @@ function Computers() {
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
+                </div>
               </td>
             </tr>
           ))}
@@ -153,8 +179,17 @@ function Computers() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        message="Are you sure you want to delete this laboratory?"
+        message="Are you sure you want to delete this computer?"
       />
+      {qrModalOpen && selectedComputer && (
+        <ComputerQr
+          computer={selectedComputer}
+          onClose={() => {
+            setQrModalOpen(false);
+            setSelectedComputer(null);
+          }}
+        />
+      )}
     </div>
   );
 }
