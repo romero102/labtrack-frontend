@@ -1,12 +1,15 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Eye } from "lucide-react";
 import { EyeClosed } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
+import Select from "react-select";
 
 function UserForm() {
   const {
+    control,
     register,
     formState: { errors },
     handleSubmit,
@@ -49,8 +52,10 @@ function UserForm() {
         onSubmit={handleSubmit(async (values) => {
           if (params.id) {
             await updateUser(params.id, values);
+            toast.success("User edited successfully");
           } else {
             await createUser(values);
+            toast.success("User created successfully");
           }
 
           navigate("/users");
@@ -66,7 +71,7 @@ function UserForm() {
           </div>
         ))}
         <div>
-          <label className="block text-sm font-medium text-gray-600">
+          <label className="block text-sm font-medium text-gray-700">
             Name
           </label>
           <input
@@ -87,7 +92,7 @@ function UserForm() {
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600">
+          <label className="block text-sm font-medium text-gray-700">
             Email
           </label>
           <input
@@ -109,7 +114,7 @@ function UserForm() {
         </div>
         {!params.id && (
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
 
@@ -148,23 +153,45 @@ function UserForm() {
             )}
           </div>
         )}
-        <div>
-          <label className="block text-sm font-medium text-gray-600">
-            Role
+        <div className="flex flex-col space-y-1">
+          <label className="block text-sm font-medium text-gray-700">
+            Role <span className="text-red-500">*</span>
           </label>
-          <select
-            {...register("role", { required: "The role is required" })}
-            aria-invalid={errors.role ? "true" : "false"}
-            className={`w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-              errors.role
-                ? "border-red-400 focus:ring-red-300"
-                : "border-gray-300 focus:ring-blue-400"
-            }`}
-          >
-            <option value="">Selected a role</option>
-            <option value="admin">Admin</option>
-            <option value="technician">Technician</option>
-          </select>
+
+          <Controller
+            name="role"
+            control={control} // viene de useForm()
+            rules={{ required: "The role is required" }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={[
+                  { value: "admin", label: "Admin" },
+                  { value: "technician", label: "Technician" },
+                ]}
+                placeholder="Select a role..."
+                className="text-sm"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderColor: state.isFocused
+                      ? "#3b82f6" // azul Tailwind
+                      : "#d1d5db", // gris Tailwind
+                    boxShadow: state.isFocused ? "0 0 0 2px #93c5fd" : "none",
+                    "&:hover": { borderColor: "#3b82f6" },
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isFocused
+                      ? "#bfdbfe" // azul claro al hover
+                      : "white",
+                    color: "#1f2937", // gris oscuro
+                  }),
+                }}
+              />
+            )}
+          />
+
           {errors.role && (
             <p role="alert" className="text-red-500 text-sm mt-1">
               {errors.role.message}
@@ -172,7 +199,7 @@ function UserForm() {
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Laboratories
           </label>
 
@@ -191,12 +218,21 @@ function UserForm() {
             ))}
           </div>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 active:scale-95 transition duration-200"
-        >
-          Save
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 active:scale-95 transition duration-200"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/users")}
+            className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

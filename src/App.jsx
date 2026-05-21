@@ -18,7 +18,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Toaster position="top-right" reverseOrder={false} />
+        <Toaster position="top-center" reverseOrder={false} toastOptions={{duration: 3000, }} />
         <Routes>
           <Route path="/" element={<h1>Home page</h1>}></Route>
           <Route path="/login" element={<Login />}></Route>
@@ -38,6 +38,7 @@ function App() {
               ></Route>
               <Route path="/computers" element={<Computers />}></Route>
               <Route path="/computerform" element={<ComputerForm />}></Route>
+              <Route path="/computerform/:id" element={<ComputerForm />}></Route>
               <Route path="/maintenance" element={<Maintenance />}></Route>
               <Route
                 path="/maintenanceform"

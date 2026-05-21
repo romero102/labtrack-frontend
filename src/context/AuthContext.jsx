@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [labs, setLabs] = useState([]);
+  const [computers, setComputers] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -255,6 +256,81 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  //-----------computers
+
+  const getComputers = async () => {
+    try {
+      const res = await getComputersRequest();
+      setComputers(res.data.data);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const getComputer = async (id) => {
+    try {
+      const res = await getComputerRequest(id);
+      return res.data.data;
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const createComputer = async (computer) => {
+    try {
+      await createComputerRequest(computer);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const deleteComputer = async (id) => {
+    try {
+      const res = await deleteComputerRequest(id);
+      if (res.status === 200) setComputers(computers.filter((computer) => computer._id != id));
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const updateComputer = async (id, computer) => {
+    try {
+      await updateComputerRequest(id, computer);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
@@ -310,6 +386,12 @@ export const AuthProvider = ({ children }) => {
         deleteUser,
         restoreUser,
         updateUser,
+        computers,
+        getComputers,
+        getComputer,
+        createComputer,
+        deleteComputer,
+        updateComputer,
       }}
     >
       {children}

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 function LaboratoryForm() {
   const {
@@ -11,7 +12,7 @@ function LaboratoryForm() {
     setValue,
   } = useForm();
 
-  const { createLab, getLab, updateLab, errors: apiErrors, } = useAuth();
+  const { createLab, getLab, updateLab, errors: apiErrors } = useAuth();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -33,11 +34,13 @@ function LaboratoryForm() {
         onSubmit={handleSubmit(async (values) => {
           if (params.id) {
             await updateLab(params.id, values);
+            toast.success("Laboratory edited successfully");
           } else {
             await createLab(values);
+            toast.success("Laboratory created successfully");
           }
 
-          navigate("/labs");
+          navigate("/laboratories");
         })}
         className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6"
       >
@@ -112,12 +115,21 @@ function LaboratoryForm() {
             </p>
           )}
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
-        >
-          Save
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 active:scale-95 transition duration-200"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/laboratories")}
+            className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );
