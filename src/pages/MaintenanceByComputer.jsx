@@ -6,34 +6,23 @@ import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
 import { Info } from "lucide-react";
 import DetailMaintenance from "../components/DetailMaintenance";
+import { useParams } from "react-router-dom";
 
-function Maintenance() {
+function MaintenanceByComputer() {
   const { maintenance, getAllMaintenance, deleteMaintenance } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
-  const [computerSearch, setComputerSearch] = useState("");
   const [userSearch, setUserSearch] = useState("");
   const [dateSearch, setDateSearch] = useState("");
   const [openModalDetail, setOpenModalDetail] = useState(false);
+
+  const params = useParams();
 
   useEffect(() => {
     getAllMaintenance();
   }, []);
 
-  if (maintenance.length === 0)
-    return (
-      <div className="mb-6 flex justify-between">
-        <h1>No Maintenance</h1>
-        <Link
-          to="/maintenanceform"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
-        >
-          Add maintenance
-        </Link>
-      </div>
-    );
-
-  const handleConfirmDelete = async () => {
+    const handleConfirmDelete = async () => {
     setModalOpen(false);
 
     const promise = deleteMaintenance(selectedMaintenance._id);
@@ -46,22 +35,39 @@ function Maintenance() {
   };
 
   const filteredMaintenance = maintenance.filter((maintenanc) => {
-    const computerMatch = maintenanc.computer?.code
-      ?.toLowerCase()
-      .includes(computerSearch.toLowerCase());
+  
+  // filtro por computadora
+  const computerMatch = maintenanc.computer?._id === params.id;
 
-    const userMatch = maintenanc.technician?.name
-      ?.toLowerCase()
-      .includes(userSearch.toLowerCase());
+  // filtro por técnico
+  const userMatch = maintenanc.technician?.name
+    ?.toLowerCase()
+    .includes(userSearch.toLowerCase());
 
-    const formattedDate = new Date(maintenanc.createdAt).toLocaleDateString(
-      "es-ES",
+  // convertir fecha
+  const formattedDate = new Date(
+    maintenanc.createdAt
+  ).toLocaleDateString("es-ES");
+
+  // filtro por fecha
+  const dateMatch = formattedDate.includes(dateSearch);
+
+  // deben cumplirse todos
+  return computerMatch && userMatch && dateMatch;
+});
+
+if (filteredMaintenance.length === 0)
+    return (
+      <div className="mb-6 flex justify-between">
+        <h1>There is no maintenance for that computer.</h1>
+        <Link
+          to={`/maintenanceform?computerId=${params.id}`}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+        >
+          Add maintenance
+        </Link>
+      </div>
     );
-
-    const dateMatch = formattedDate.includes(dateSearch);
-
-    return computerMatch && userMatch && dateMatch;
-  });
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -69,16 +75,6 @@ function Maintenance() {
         <h1 className="text-2xl font-bold text-gray-800">Maintenace</h1>
       </div>
       <div className="mb-6 flex gap-4">
-        <form className="relative max-w-md">
-          <input
-            type="text"
-            placeholder="Find by computer..."
-            value={computerSearch}
-            onChange={(e) => setComputerSearch(e.target.value)}
-            className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
-        </form>
         <form className="relative max-w-md">
           <input
             type="text"
@@ -194,4 +190,4 @@ function Maintenance() {
   );
 }
 
-export default Maintenance;
+export default MaintenanceByComputer;

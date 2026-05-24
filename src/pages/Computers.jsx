@@ -21,7 +21,6 @@ function Computers() {
     getComputers();
   }, []);
 
-  console.log(computers);
 
   if (computers.length === 0)
     return (
@@ -136,13 +135,14 @@ function Computers() {
               <td className="px-6 py-4">
                 <div className="flex gap-4">
                   <Link
-                  to={`/maintenanceform/${computer._id}`}
+                  to={`/maintenanceform?computerId=${computer._id}`}
                   className="text-blue-600 hover:text-blue-800 transition flex items-center"
                 >
                   <SquarePlus className="w-5 h-5" />
                 </Link>
                 <button
-                  onClick={() => {navigate("/maintenance")}}
+                  onClick={() => {
+                    navigate(`/maintenance/${computer._id}`)}}
                   className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm mr-2"
                 >
                   History

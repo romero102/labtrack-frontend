@@ -13,7 +13,7 @@ import {
   createComputerRequest,
   updateComputerRequest,
   deleteComputerRequest,
-  getMaintenancesRequest,
+  getAllMaintenanceRequest,
   getMaintenanceRequest,
   createMaintenanceRequest,
   updateMaintenanceRequest,
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [labs, setLabs] = useState([]);
   const [computers, setComputers] = useState([]);
+  const [maintenance, setMaintenance] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -331,6 +332,81 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+   //----------------maintenance
+
+  const getAllMaintenance = async () => {
+    try {
+      const res = await getAllMaintenanceRequest();
+      setMaintenance(res.data.data);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const getMaintenance = async (id) => {
+    try {
+      const res = await getMaintenanceRequest(id);
+      return res.data.data;
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const createMaintenance = async (maintenance) => {
+    try {
+      await createMaintenanceRequest(maintenance);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const deleteMaintenance = async (id) => {
+    try {
+      const res = await deleteMaintenanceRequest(id);
+      if (res.status === 200) setMaintenance(maintenance.filter((maintenanc) => maintenanc._id != id));
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const updateMaintenance = async (id, maintenance) => {
+    try {
+      await updateMaintenanceRequest(id, maintenance);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
@@ -392,6 +468,12 @@ export const AuthProvider = ({ children }) => {
         createComputer,
         deleteComputer,
         updateComputer,
+        maintenance,
+        getAllMaintenance,
+        getMaintenance,
+        createMaintenance,
+        updateMaintenance,
+        deleteMaintenance
       }}
     >
       {children}

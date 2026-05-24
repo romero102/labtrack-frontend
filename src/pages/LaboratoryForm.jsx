@@ -46,7 +46,7 @@ function LaboratoryForm() {
 }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <form
         onSubmit={handleSubmit(async (values) => {
           if (params.id) {

@@ -52,7 +52,7 @@ function ComputerForm() {
 
   if (loadingComputer && params.id) {
   return (
-  <div className="min-h-screen flex items-center justify-center">
+  <div className="min-h-screen flex items-center justify-center px-4">
       <h1 className="text-xl font-semibold text-gray-700 animate-pulse">
         Loading computer...
       </h1> 

@@ -29,15 +29,15 @@ export const updateComputerRequest = (id, computer) => axios.put(`/computers/${i
 export const deleteComputerRequest = (id) => axios.delete(`/computers/${id}`)
 
 
-export const getMaintenancesRequest = () => axios.get(`/maintenances`)
+export const getAllMaintenanceRequest = () => axios.get(`/maintenance`)
 
-export const getMaintenanceRequest = (id) => axios.get(`/maintenances/${id}`)
+export const getMaintenanceRequest = (id) => axios.get(`/maintenance/${id}`)
 
-export const createMaintenanceRequest = (mintenance) => axios.post(`/maintenances`, mintenance)
+export const createMaintenanceRequest = (mintenance) => axios.post(`/maintenance`, mintenance)
 
-export const updateMaintenanceRequest = (id, mintenance) => axios.put(`/maintenances/${id}`, mintenance)
+export const updateMaintenanceRequest = (id, mintenance) => axios.put(`/maintenance/${id}`, mintenance)
 
-export const deleteMaintenanceRequest = (id) => axios.delete(`/maintenances/${id}`)
+export const deleteMaintenanceRequest = (id) => axios.delete(`/maintenance/${id}`)
 
 
 export const getUsersRequest = () => axios.get(`/users`)

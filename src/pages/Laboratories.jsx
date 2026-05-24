@@ -40,7 +40,7 @@ function Laboratories() {
   };
 
   const filteredLabs = labs.filter((lab) =>
-    lab.name.toLowerCase().includes(searchTerm.toLowerCase())
+    lab?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

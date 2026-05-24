@@ -12,6 +12,7 @@ import Laboratories from "./pages/Laboratories";
 import LaboratoryForm from "./pages/LaboratoryForm";
 import Maintenance from "./pages/Maintenance";
 import MaintenanceForm from "./pages/MaintenanceForm";
+import MaintenanceByComputer from "./pages/MaintenanceByComputer";
 import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
@@ -43,6 +44,14 @@ function App() {
               <Route
                 path="/maintenanceform"
                 element={<MaintenanceForm />}
+              ></Route>
+              <Route
+                path="/maintenanceform/:id"
+                element={<MaintenanceForm />}
+              ></Route>
+              <Route
+                path="/maintenance/:id"
+                element={<MaintenanceByComputer />}
               ></Route>
             </Route>
           </Route>

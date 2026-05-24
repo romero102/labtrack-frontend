@@ -43,8 +43,7 @@ function UserForm() {
         const user = await getUser(params.id);
         setValue("name", user.name);
         setValue("email", user.email);
-        const selectedRole = roleOptions.find(opt => opt.value === user.role);
-        setValue("role", selectedRole);
+        setValue("role", user.role)
         setValue(
           "labs",
           user.labs.map((lab) => lab._id),
@@ -70,7 +69,7 @@ function UserForm() {
 }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <form
         onSubmit={handleSubmit(async (values) => {
           if (params.id) {
@@ -178,7 +177,7 @@ function UserForm() {
         )}
         <div className="flex flex-col space-y-1">
           <label className="block text-sm font-medium text-gray-700">
-            Role <span className="text-red-500">*</span>
+            Role
           </label>
 
           <Controller
@@ -193,6 +192,8 @@ function UserForm() {
                   { value: "technician", label: "Technician" },
                 ]}
                 placeholder="Select a role..."
+      value={roleOptions.find(opt => opt.value === field.value)}
+      onChange={(option) => field.onChange(option.value)}
                 className="text-sm"
                 styles={{
                   control: (base, state) => ({
