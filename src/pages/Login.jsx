@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 
 function Login() {
@@ -11,10 +11,18 @@ function Login() {
     handleSubmit,
   } = useForm();
   const { login, isAuthenticated, user, errors: authErrors } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     if (isAuthenticated && user) {
+      // si venía de un QR o una ruta protegida
+      if (location.state?.from) {
+        navigate(from, { replace: true });
+        return;
+      }
+
       if (user.role === "admin") {
         navigate("/computers");
       }
@@ -108,9 +116,9 @@ function Login() {
         >
           Login
         </button>
-        <Link to="/forgot-password"
-        className="text-blue-600"
-        >Forgot your password?</Link>
+        <Link to="/forgot-password" className="text-blue-600">
+          Forgot your password?
+        </Link>
       </form>
     </div>
   );

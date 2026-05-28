@@ -1,8 +1,10 @@
 import { useAuth } from "./context/AuthContext";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 function ProtectedRoute({ allowedRoles }) {
   const { loading, isAuthenticated, user } = useAuth();
+  const location = useLocation();
+
   if (loading)
     return (
       <div className="flex justify-center items-center py-10">
@@ -10,7 +12,7 @@ function ProtectedRoute({ allowedRoles }) {
       </div>
     );
 
-  if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (!isAuthenticated) return <Navigate to="/" replace state={{ from: location }} />;
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
