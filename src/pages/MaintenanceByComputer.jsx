@@ -24,6 +24,31 @@ function MaintenanceByComputer() {
     getAllMaintenance();
   }, []);
 
+   const filteredMaintenance = maintenance
+    .filter((maintenanc) => {
+      // filtro por computadora
+      const computerMatch = maintenanc.computer?._id === params.id;
+
+      // filtro por técnico
+      const userMatch = maintenanc.technician?.name
+        ?.toLowerCase()
+        .includes(userSearch.toLowerCase());
+
+      let dateMatch = true;
+
+      if (selectedDate) {
+        const maintenanceDate = new Date(maintenanc.createdAt);
+
+        dateMatch =
+          maintenanceDate.toDateString() === selectedDate.toDateString();
+      }
+
+      return computerMatch && userMatch && dateMatch;
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const computerData = filteredMaintenance[0]?.computer;
+
   if (loadingMaintenance) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -56,31 +81,6 @@ function MaintenanceByComputer() {
       error: "Something went wrong",
     });
   };
-
-  const filteredMaintenance = maintenance
-    .filter((maintenanc) => {
-      // filtro por computadora
-      const computerMatch = maintenanc.computer?._id === params.id;
-
-      // filtro por técnico
-      const userMatch = maintenanc.technician?.name
-        ?.toLowerCase()
-        .includes(userSearch.toLowerCase());
-
-      let dateMatch = true;
-
-      if (selectedDate) {
-        const maintenanceDate = new Date(maintenanc.createdAt);
-
-        dateMatch =
-          maintenanceDate.toDateString() === selectedDate.toDateString();
-      }
-
-      return computerMatch && userMatch && dateMatch;
-    })
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  const computerData = filteredMaintenance[0]?.computer;
 
   return (
     <div className="max-w-6xl mx-auto p-4">
