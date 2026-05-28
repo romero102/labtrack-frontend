@@ -6,7 +6,6 @@ import toast, { Toaster } from "react-hot-toast";
 import Select from "react-select";
 
 function MaintenanceForm() {
-  
   const {
     control,
     register,
@@ -69,12 +68,11 @@ function MaintenanceForm() {
             const computer = await getComputer(computerId);
             setValue("computer", computer._id);
             setValue("computerCode", computer.code);
-            ; 
           }
 
           if (user) {
             setValue("technician", user._id);
-            setValue("technicianName", user.name)
+            setValue("technicianName", user.name);
           }
         }
       } finally {
@@ -106,7 +104,10 @@ function MaintenanceForm() {
             toast.success("Maintenance created successfully");
           }
 
-          navigate("/Maintenance");
+          const redirectRoute =
+            user.role === "admin" ? "/maintenance" : "/mymaintenance";
+
+          navigate(redirectRoute);
         })}
         className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg space-y-6"
       >
@@ -337,7 +338,9 @@ function MaintenanceForm() {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/maintenance")}
+            onClick={() =>
+              navigate(user.role === "admin" ? "/computers" : "/mylaboratories")
+            }
             className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg"
           >
             Cancel

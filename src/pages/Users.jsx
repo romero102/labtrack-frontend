@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
 
 function Users() {
-  const { users, getUsers, deleteUser, restoreUser } = useAuth();
+  const { users, getUsers, deleteUser, restoreUser, loadingUsers } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [action, setAction] = useState(null);
@@ -16,7 +16,27 @@ function Users() {
     getUsers();
   }, []);
 
-  if (users.length === 0) return <h1>No users</h1>;
+  if (loadingUsers) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (users.length === 0)
+    return (
+      <div className="mb-6 flex justify-between">
+        <h1>No Users</h1>
+        <Link
+          to="/computerform"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+        >
+          Add user
+        </Link>
+      </div>
+    );
+  
 
   const handleConfirm = async () => {
     setModalOpen(false);
@@ -37,7 +57,7 @@ function Users() {
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <div className="max-w-6xl mx-auto p-4">

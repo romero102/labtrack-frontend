@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
 
 function Laboratories() {
-  const { labs, getLabs, deleteLab } = useAuth();
+  const { labs, getLabs, deleteLab, loadingLabs } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedLab, setSelectedLab] = useState(null);
   const [searchTerm, setSearchTerm] = useState("")
@@ -14,6 +14,14 @@ function Laboratories() {
   useEffect(() => {
     getLabs();
   }, []);
+
+  if (loadingLabs) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   if (labs.length === 0) return(
     <div className="mb-6 flex justify-between">
@@ -39,10 +47,11 @@ function Laboratories() {
     });
   };
 
-  const filteredLabs = labs.filter((lab) =>
+  const filteredLabs = [...labs]
+  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  .filter((lab) =>
     lab?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">

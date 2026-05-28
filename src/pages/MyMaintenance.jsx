@@ -9,20 +9,24 @@ import DetailMaintenance from "../components/DetailMaintenance";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-function Maintenance() {
-  const { maintenance, getAllMaintenance, deleteMaintenance, loadingMaintenance} = useAuth();
+function MyMaintenance() {
+  const {
+    maintenance,
+    getMyMaintenance,
+    deleteMaintenance,
+    loadingMaintenance,
+  } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
   const [computerSearch, setComputerSearch] = useState("");
-  const [userSearch, setUserSearch] = useState("");
   const [openModalDetail, setOpenModalDetail] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
-    getAllMaintenance();
+    getMyMaintenance();
   }, []);
 
-   if (loadingMaintenance) {
+  if (loadingMaintenance) {
     return (
       <div className="flex justify-center items-center py-10">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
@@ -56,21 +60,16 @@ function Maintenance() {
         ?.toLowerCase()
         .includes(computerSearch.toLowerCase());
 
-      const userMatch = maintenanc.technician?.name
-        ?.toLowerCase()
-        .includes(userSearch.toLowerCase());
-
       let dateMatch = true;
 
-    if (selectedDate) {
-      const maintenanceDate = new Date(maintenanc.createdAt);
+      if (selectedDate) {
+        const maintenanceDate = new Date(maintenanc.createdAt);
 
-      dateMatch =
-        maintenanceDate.toDateString() ===
-        selectedDate.toDateString();
-    }
+        dateMatch =
+          maintenanceDate.toDateString() === selectedDate.toDateString();
+      }
 
-      return computerMatch && userMatch && dateMatch;
+      return computerMatch && dateMatch;
     })
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -86,16 +85,6 @@ function Maintenance() {
             placeholder="Find by computer..."
             value={computerSearch}
             onChange={(e) => setComputerSearch(e.target.value)}
-            className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
-        </form>
-        <form className="relative max-w-md">
-          <input
-            type="text"
-            placeholder="Find by user..."
-            value={userSearch}
-            onChange={(e) => setUserSearch(e.target.value)}
             className="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
@@ -204,4 +193,4 @@ function Maintenance() {
   );
 }
 
-export default Maintenance;
+export default MyMaintenance;

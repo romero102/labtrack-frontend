@@ -1,15 +1,13 @@
-import { Search, SquarePen, Trash2 } from "lucide-react";
+import { Search, SquarePen, Trash2, SquarePlus, ScanQrCode } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmModal from "../components/ConfirmModal";
 import ComputerQr from "../components/ComputerQr";
-import { ScanQrCode } from "lucide-react";
-import { SquarePlus } from 'lucide-react';
 
 function Computers() {
-  const { computers, getComputers, deleteComputer } = useAuth();
+  const { computers, getComputers, deleteComputer, loadingComputers } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedComputer, setSelectedComputer] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
@@ -21,6 +19,13 @@ function Computers() {
     getComputers();
   }, []);
 
+  if (loadingComputers) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   if (computers.length === 0)
     return (
@@ -57,7 +62,9 @@ function Computers() {
     URL.revokeObjectURL(link.href);
   };
 
-  const filteredComputers = computers.filter((computer) =>
+  const filteredComputers = [...computers]
+  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  .filter((computer) =>
     computer.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

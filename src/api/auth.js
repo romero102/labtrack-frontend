@@ -11,6 +11,8 @@ export const getLabsRequest = () => axios.get(`/labs`)
 
 export const getLabRequest = (id) => axios.get(`/labs/${id}`)
 
+export const getMyLabsRequest = () => axios.get(`labs/mylaboratories`)
+
 export const createLabRequest = (lab) => axios.post(`/labs`, lab)
 
 export const updateLabRequest = (id, lab) => axios.put(`/labs/${id}`, lab)
@@ -22,6 +24,8 @@ export const getComputersRequest = () => axios.get(`/computers`)
 
 export const getComputerRequest = (id) => axios.get(`/computers/${id}`)
 
+export const getComputerByLabRequest = (id) => axios.get(`/computers/lab/${id}`)
+
 export const createComputerRequest = (computer) => axios.post(`/computers`, computer)
 
 export const updateComputerRequest = (id, computer) => axios.put(`/computers/${id}`, computer)
@@ -30,6 +34,8 @@ export const deleteComputerRequest = (id) => axios.delete(`/computers/${id}`)
 
 
 export const getAllMaintenanceRequest = () => axios.get(`/maintenance`)
+
+export const getMyMaintenanceRequest = () => axios.get("/maintenance/mymaintenance");
 
 export const getMaintenanceRequest = (id) => axios.get(`/maintenance/${id}`)
 

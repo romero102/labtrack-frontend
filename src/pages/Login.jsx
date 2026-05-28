@@ -11,12 +11,22 @@ function Login() {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const { login, isAuthenticated, errors: authErrors } = useAuth();
+  const { login, isAuthenticated, user, errors: authErrors } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated) navigate("/computers");
-  }, [isAuthenticated]);
+ useEffect(() => {
+  if (isAuthenticated && user) {
+
+    if (user.role === "admin") {
+      navigate("/computers");
+    }
+
+    if (user.role === "technician") {
+      navigate("/mylaboratories");
+    }
+
+  }
+}, [isAuthenticated, user]);
 
   const [showPassword, setShowPassword] = useState(false);
 

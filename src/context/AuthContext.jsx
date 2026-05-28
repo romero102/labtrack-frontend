@@ -5,15 +5,18 @@ import {
   verifyTokenRequest,
   getLabsRequest,
   getLabRequest,
+  getMyLabsRequest,
   createLabRequest,
   updateLabRequest,
   deleteLabRequest,
   getComputersRequest,
   getComputerRequest,
+  getComputerByLabRequest,
   createComputerRequest,
   updateComputerRequest,
   deleteComputerRequest,
   getAllMaintenanceRequest,
+  getMyMaintenanceRequest,
   getMaintenanceRequest,
   createMaintenanceRequest,
   updateMaintenanceRequest,
@@ -46,6 +49,10 @@ export const AuthProvider = ({ children }) => {
   const [maintenance, setMaintenance] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingComputers, setLoadingComputers] = useState(false);
+  const [loadingLabs, setLoadingLabs] = useState(false);
+  const [loadingMaintenance, setLoadingMaintenance] = useState(false)
+  const [loadingUsers, setLoadingUsers] = useState(false)
 
   const login = async (user) => {
     try {
@@ -86,6 +93,7 @@ export const AuthProvider = ({ children }) => {
 
   const getLabs = async () => {
     try {
+      setLoadingLabs(true)
       const res = await getLabsRequest();
       setLabs(res.data.data);
     } catch (error) {
@@ -96,7 +104,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }
+    }finally {
+    setLoadingLabs(false);
+  }
   };
 
   const getLab = async (id) => {
@@ -112,6 +122,24 @@ export const AuthProvider = ({ children }) => {
 
       throw error;
     }
+  };
+
+  const getMyLabs = async () => {
+    try {
+      setLoadingLabs(true);
+      const res = await getMyLabsRequest();
+      setLabs(res.data.data);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }finally {
+    setLoadingLabs(false);
+  }
   };
 
   const createLab = async (lab) => {
@@ -159,6 +187,7 @@ export const AuthProvider = ({ children }) => {
   //--------------users
   const getUsers = async () => {
     try {
+      setLoadingUsers(true)
       const res = await getUsersRequest();
       setUsers(res.data.data);
     } catch (error) {
@@ -169,7 +198,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }
+    }finally {
+    setLoadingUsers(false);
+  }
   };
 
   const getUser = async (id) => {
@@ -205,12 +236,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await deleteUserRequest(id);
       if (res.status === 200) {
-      setUsers(
-        users.map((user) =>
-          user._id === id ? res.data.data : user
-        )
-      );
-    }
+        setUsers(users.map((user) => (user._id === id ? res.data.data : user)));
+      }
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -226,12 +253,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await restoreUserRequest(id);
       if (res.status === 200) {
-      setUsers(
-        users.map((user) =>
-          user._id === id ? res.data.data : user
-        )
-      );
-    }
+        setUsers(users.map((user) => (user._id === id ? res.data.data : user)));
+      }
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -261,6 +284,7 @@ export const AuthProvider = ({ children }) => {
 
   const getComputers = async () => {
     try {
+      setLoadingComputers(true)
       const res = await getComputersRequest();
       setComputers(res.data.data);
     } catch (error) {
@@ -271,7 +295,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }
+    }finally {
+    setLoadingComputers(false);
+  }
   };
 
   const getComputer = async (id) => {
@@ -286,6 +312,25 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
+    }
+  };
+
+  const getComputerByLab = async (id) => {
+    try {
+      setComputers([]);
+      setLoadingComputers(true);
+      const res = await getComputerByLabRequest(id);
+      setComputers(res.data.data);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    } finally {
+      setLoadingComputers(false);
     }
   };
 
@@ -306,7 +351,8 @@ export const AuthProvider = ({ children }) => {
   const deleteComputer = async (id) => {
     try {
       const res = await deleteComputerRequest(id);
-      if (res.status === 200) setComputers(computers.filter((computer) => computer._id != id));
+      if (res.status === 200)
+        setComputers(computers.filter((computer) => computer._id != id));
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -332,10 +378,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-   //----------------maintenance
+  //----------------maintenance
 
   const getAllMaintenance = async () => {
     try {
+      setLoadingMaintenance(true)
       const res = await getAllMaintenanceRequest();
       setMaintenance(res.data.data);
     } catch (error) {
@@ -346,7 +393,21 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }
+    }finally {
+    setLoadingMaintenance(false);
+  }
+  };
+
+  const getMyMaintenance = async () => {
+    try {
+      setLoadingMaintenance(true)
+      const res = await getMyMaintenanceRequest();
+      setMaintenance(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }finally {
+    setLoadingMaintenance(false);
+  }
   };
 
   const getMaintenance = async (id) => {
@@ -381,7 +442,10 @@ export const AuthProvider = ({ children }) => {
   const deleteMaintenance = async (id) => {
     try {
       const res = await deleteMaintenanceRequest(id);
-      if (res.status === 200) setMaintenance(maintenance.filter((maintenanc) => maintenanc._id != id));
+      if (res.status === 200)
+        setMaintenance(
+          maintenance.filter((maintenanc) => maintenanc._id != id),
+        );
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -450,12 +514,15 @@ export const AuthProvider = ({ children }) => {
         loading,
         errors,
         labs,
+        loadingLabs,
         getLabs,
         getLab,
+        getMyLabs,
         createLab,
         deleteLab,
         updateLab,
         users,
+        loadingUsers,
         getUsers,
         getUser,
         createUser,
@@ -463,17 +530,21 @@ export const AuthProvider = ({ children }) => {
         restoreUser,
         updateUser,
         computers,
+        loadingComputers,
         getComputers,
         getComputer,
+        getComputerByLab,
         createComputer,
         deleteComputer,
         updateComputer,
         maintenance,
+        loadingMaintenance,
         getAllMaintenance,
+        getMyMaintenance,
         getMaintenance,
         createMaintenance,
         updateMaintenance,
-        deleteMaintenance
+        deleteMaintenance,
       }}
     >
       {children}
