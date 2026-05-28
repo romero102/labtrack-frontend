@@ -113,7 +113,7 @@ function Computers() {
               className="border-t hover:bg-gray-50 transition"
             >
               <td className="px-6 py-4">{computer.code}</td>
-              <td className="px-6 py-4">{computer.lab.name}</td>
+              <td className="px-6 py-4">{computer.lab?.name}</td>
               <td className="px-6 py-4">{computer.processor}</td>
               <td className="px-6 py-4">{computer.ram}</td>
               <td className="px-6 py-4">{computer.storage}</td>
