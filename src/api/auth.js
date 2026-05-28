@@ -2,6 +2,10 @@ import axios from "./axios"
 
 export const loginRequest = (user) => axios.post(`/auth/login`, user)
 
+export const forgotPasswordRequest = (email) => axios.post(`/auth/forgot-password`, email)
+
+export const resetPasswordRequest = (token, password) => axios.post(`/auth/reset-password/${token}`, password)
+
 export const logoutRequest = () => axios.post(`/auth/logout`)
 
 export const verifyTokenRequest = () => axios.get("/auth/verify")

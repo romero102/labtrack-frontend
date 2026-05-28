@@ -4,6 +4,8 @@ import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
 
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Users from "./pages/Users";
 import UserForm from "./pages/UserForm";
 import Computers from "./pages/Computers";
@@ -30,6 +32,8 @@ function App() {
           {/* Rutas públicas */}
           <Route path="/" element={<h1>Home page</h1>} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Rutas protegidas con Layout */}
           <Route element={<ProtectedRoute />}>

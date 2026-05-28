@@ -31,47 +31,52 @@ function UserForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const roleOptions = [
-  { value: "admin", label: "Admin" },
-  { value: "technician", label: "Technician" },
-];
+    { value: "admin", label: "Admin" },
+    { value: "technician", label: "Technician" },
+  ];
 
   useEffect(() => {
     getLabs();
     async function loadUser() {
       try {
         if (params.id) {
-        const user = await getUser(params.id);
-        setValue("name", user.name);
-        setValue("email", user.email);
-        setValue("role", user.role)
-        setValue(
-          "labs",
-          user.labs.map((lab) => lab._id),
-        );
-      }
+          const user = await getUser(params.id);
+          setValue("name", user.name);
+          setValue("email", user.email);
+          setValue("role", user.role);
+          setValue(
+            "labs",
+            user.labs.map((lab) => lab._id),
+          );
+        }
       } finally {
-      setLoadingUser(false);
-    }   
+        setLoadingUser(false);
+      }
     }
     loadUser();
   }, []);
 
-  
-
   if (loadingUser && params.id) {
-  return (
-  <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-xl font-semibold text-gray-700 animate-pulse">
-        Loading user...
-      </h1> 
-  </div>
-);
-}
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-xl font-semibold text-gray-700 animate-pulse">
+          Loading user...
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <form
         onSubmit={handleSubmit(async (values) => {
+          // asegurar que labs siempre sea un array
+          values.labs = values.labs
+            ? Array.isArray(values.labs)
+              ? values.labs
+              : [values.labs]
+            : [];
+
           if (params.id) {
             await updateUser(params.id, values);
             toast.success("User edited successfully");
@@ -192,8 +197,8 @@ function UserForm() {
                   { value: "technician", label: "Technician" },
                 ]}
                 placeholder="Select a role..."
-      value={roleOptions.find(opt => opt.value === field.value)}
-      onChange={(option) => field.onChange(option.value)}
+                value={roleOptions.find((opt) => opt.value === field.value)}
+                onChange={(option) => field.onChange(option.value)}
                 className="text-sm"
                 styles={{
                   control: (base, state) => ({

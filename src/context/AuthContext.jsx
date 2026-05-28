@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import {
   loginRequest,
+  forgotPasswordRequest,
+  resetPasswordRequest,
   logoutRequest,
   verifyTokenRequest,
   getLabsRequest,
@@ -59,6 +61,36 @@ export const AuthProvider = ({ children }) => {
       const res = await loginRequest(user);
       setUser(res.data);
       setIsAuthenticated(true);
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const forgotPassword = async (email) => {
+    try {
+      const res = await forgotPasswordRequest(email);
+      return res
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+
+      throw error;
+    }
+  };
+
+  const resetPassword = async (token, password) => {
+    try {
+      const res = await resetPasswordRequest(token, password);
+      return res
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -509,6 +541,8 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login,
+        forgotPassword,
+        resetPassword,
         logout,
         isAuthenticated,
         loading,
