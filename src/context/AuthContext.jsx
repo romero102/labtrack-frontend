@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }) => {
       await logoutRequest(); // llama al backend
       setUser(null);
       setIsAuthenticated(false);
-      navigate("/login"); // redirige
+      navigate("/"); // redirige
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
