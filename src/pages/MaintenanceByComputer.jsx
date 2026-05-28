@@ -11,7 +11,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function MaintenanceByComputer() {
-  const { maintenance, getAllMaintenance, deleteMaintenance, user } = useAuth();
+  const { maintenance, getAllMaintenance, deleteMaintenance, user, loadingMaintenance } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
   const [userSearch, setUserSearch] = useState("");
@@ -23,6 +23,27 @@ function MaintenanceByComputer() {
   useEffect(() => {
     getAllMaintenance();
   }, []);
+
+  if (loadingMaintenance) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (filteredMaintenance.length === 0)
+    return (
+      <div className="mb-6 flex justify-between">
+        <h1>There is no maintenance for that computer.</h1>
+        <Link
+          to={`/maintenanceform?computerId=${params.id}`}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+        >
+          Add maintenance
+        </Link>
+      </div>
+    );
 
   const handleConfirmDelete = async () => {
     setModalOpen(false);
@@ -58,19 +79,6 @@ function MaintenanceByComputer() {
       return computerMatch && userMatch && dateMatch;
     })
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  if (filteredMaintenance.length === 0)
-    return (
-      <div className="mb-6 flex justify-between">
-        <h1>There is no maintenance for that computer.</h1>
-        <Link
-          to={`/maintenanceform?computerId=${params.id}`}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
-        >
-          Add maintenance
-        </Link>
-      </div>
-    );
 
   const computerData = filteredMaintenance[0]?.computer;
 
