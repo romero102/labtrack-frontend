@@ -8,6 +8,7 @@ import { Info } from "lucide-react";
 import DetailMaintenance from "../components/DetailMaintenance";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import MyMaintenanceCard from "../components/MyMaintenanceCard";
 
 function MyMaintenance() {
   const {
@@ -78,8 +79,8 @@ function MyMaintenance() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Maintenace</h1>
       </div>
-      <div className="mb-6 flex gap-4">
-        <form className="relative max-w-md">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row">
+        <form className="relative w-full md:max-w-md">
           <input
             type="text"
             placeholder="Find by computer..."
@@ -89,7 +90,7 @@ function MyMaintenance() {
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
         </form>
-        <form className="relative max-w-md">
+        <form className="relative w-full md:max-w-md">
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
@@ -99,79 +100,92 @@ function MyMaintenance() {
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
         </form>
       </div>
-      <table className="w-full text-left">
-        <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
-          <tr>
-            <th className="px-6 py-3">Computer</th>
-            <th className="px-6 py-3">Technician</th>
-            <th className="px-6 py-3">Category</th>
-            <th className="px-6 py-3">Nature</th>
-            <th className="px-6 py-3">Description</th>
-            <th className="px-6 py-3">Findings</th>
-            <th className="px-6 py-3">Status</th>
-            <th className="px-6 py-3">Date</th>
-            <th className="px-6 py-3">Detail</th>
-            <th className="px-6 py-3 text-center">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody className="text-gray-700">
-          {filteredMaintenance.map((maintenance) => (
-            <tr
-              key={maintenance._id}
-              className="border-t hover:bg-gray-50 transition"
-            >
-              <td className="px-6 py-4">{maintenance.computer?.code}</td>
-              <td className="px-6 py-4">{maintenance.technician?.name}</td>
-              <td className="px-6 py-4">{maintenance.category}</td>
-              <td className="px-6 py-4">{maintenance.nature}</td>
-              <td className="px-6 py-4">
-                {maintenance.description.slice(0, 8)}...
-              </td>
-              <td className="px-6 py-4">
-                {maintenance.findings.slice(0, 8)}...
-              </td>
-              <td className="px-6 py-4">{maintenance.status}</td>
-              <td className="px-6 py-4">
-                {new Date(maintenance.createdAt).toLocaleDateString()}
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex items-center justify-center">
-                  <button
-                    className="text-amber-600 hover:text-amber-800 transition"
-                    onClick={() => {
-                      (setSelectedMaintenance(maintenance),
-                        setOpenModalDetail(true));
-                    }}
-                  >
-                    <Info />
-                  </button>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <div className="flex justify-center gap-4">
-                  <Link
-                    to={`/maintenanceform/${maintenance._id}`}
-                    className="text-blue-600 hover:text-blue-800 transition"
-                  >
-                    <SquarePen className="w-5 h-5" />
-                  </Link>
-
-                  <button
-                    className="text-red-600 hover:text-red-800 transition"
-                    onClick={() => {
-                      setSelectedMaintenance(maintenance);
-                      setModalOpen(true);
-                    }}
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-              </td>
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full text-left">
+          <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
+            <tr>
+              <th className="px-6 py-3">Computer</th>
+              <th className="px-6 py-3">Technician</th>
+              <th className="px-6 py-3">Category</th>
+              <th className="px-6 py-3">Nature</th>
+              <th className="px-6 py-3">Description</th>
+              <th className="px-6 py-3">Findings</th>
+              <th className="px-6 py-3">Status</th>
+              <th className="px-6 py-3">Date</th>
+              <th className="px-6 py-3">Detail</th>
+              <th className="px-6 py-3 text-center">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody className="text-gray-700">
+            {filteredMaintenance.map((maintenance) => (
+              <tr
+                key={maintenance._id}
+                className="border-t hover:bg-gray-50 transition"
+              >
+                <td className="px-6 py-4">{maintenance.computer?.code}</td>
+                <td className="px-6 py-4">{maintenance.technician?.name}</td>
+                <td className="px-6 py-4">{maintenance.category}</td>
+                <td className="px-6 py-4">{maintenance.nature}</td>
+                <td className="px-6 py-4">
+                  {maintenance.description.slice(0, 8)}...
+                </td>
+                <td className="px-6 py-4">
+                  {maintenance.findings.slice(0, 8)}...
+                </td>
+                <td className="px-6 py-4">{maintenance.status}</td>
+                <td className="px-6 py-4">
+                  {new Date(maintenance.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-center">
+                    <button
+                      className="text-amber-600 hover:text-amber-800 transition"
+                      onClick={() => {
+                        (setSelectedMaintenance(maintenance),
+                          setOpenModalDetail(true));
+                      }}
+                    >
+                      <Info />
+                    </button>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex justify-center gap-4">
+                    <Link
+                      to={`/maintenanceform/${maintenance._id}`}
+                      className="text-blue-600 hover:text-blue-800 transition"
+                    >
+                      <SquarePen className="w-5 h-5" />
+                    </Link>
+
+                    <button
+                      className="text-red-600 hover:text-red-800 transition"
+                      onClick={() => {
+                        setSelectedMaintenance(maintenance);
+                        setModalOpen(true);
+                      }}
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {filteredMaintenance.map((maintenance) => (
+          <MyMaintenanceCard
+            key={maintenance._id}
+            maintenance={maintenance}
+            setSelectedMaintenance={setSelectedMaintenance}
+            setOpenModalDetail={setOpenModalDetail}
+            setModalOpen={setModalOpen}
+          />
+        ))}
+      </div>
 
       {/* Modal de confirmación */}
       <ConfirmModal

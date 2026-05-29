@@ -15,23 +15,26 @@ function Login() {
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
 
+  console.log(location.state);
+
   useEffect(() => {
     if (isAuthenticated && user) {
-      // si venía de un QR o una ruta protegida
-      if (location.state?.from) {
-        navigate(from, { replace: true });
+      if (location.state?.requiresAuth) {
+        navigate(location.state.from.pathname, {
+          replace: true,
+        });
         return;
       }
 
       if (user.role === "admin") {
-        navigate("/computers");
+        navigate("/computers", { replace: true });
       }
 
       if (user.role === "technician") {
-        navigate("/mylaboratories");
+        navigate("/mylaboratories", { replace: true });
       }
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, location.state, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 

@@ -9,9 +9,16 @@ import DetailMaintenance from "../components/DetailMaintenance";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import MaintenanceByComputerCard from "../components/MaintenanceByComputerCard";
 
 function MaintenanceByComputer() {
-  const { maintenance, getAllMaintenance, deleteMaintenance, user, loadingMaintenance } = useAuth();
+  const {
+    maintenance,
+    getAllMaintenance,
+    deleteMaintenance,
+    user,
+    loadingMaintenance,
+  } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
   const [userSearch, setUserSearch] = useState("");
@@ -24,7 +31,7 @@ function MaintenanceByComputer() {
     getAllMaintenance();
   }, []);
 
-   const filteredMaintenance = maintenance
+  const filteredMaintenance = maintenance
     .filter((maintenanc) => {
       // filtro por computadora
       const computerMatch = maintenanc.computer?._id === params.id;
@@ -62,8 +69,8 @@ function MaintenanceByComputer() {
       <div className="mb-6 flex justify-between">
         <h1>There is no maintenance for that computer.</h1>
         <Link
-          to={`/maintenanceform?computerId=${params.id}`}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+          to={`/maintenanceform?computerId=${computerData?._id}`}
+          className="order-1 md:order-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition text-center"
         >
           Add maintenance
         </Link>
@@ -90,35 +97,35 @@ function MaintenanceByComputer() {
         </h1>
       </div>
       <div className="bg-white shadow rounded-xl p-4 mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-gray-500 text-sm">Laboratory</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex gap-4">
+            <p className="text-gray-500 text-sm">Laboratory:</p>
             <p className="font-medium">{computerData?.lab?.name}</p>
           </div>
 
-          <div>
-            <p className="text-gray-500 text-sm">Processor</p>
+          <div className="flex gap-4">
+            <p className="text-gray-500 text-sm">Processor:</p>
             <p className="font-medium">{computerData?.processor}</p>
           </div>
 
-          <div>
-            <p className="text-gray-500 text-sm">RAM</p>
+          <div className="flex gap-4">
+            <p className="text-gray-500 text-sm">RAM:</p>
             <p className="font-medium">{computerData?.ram}</p>
           </div>
 
-          <div>
-            <p className="text-gray-500 text-sm">Storage</p>
+          <div className="flex gap-4">
+            <p className="text-gray-500 text-sm">Storage:</p>
             <p className="font-medium">{computerData?.storage}</p>
           </div>
 
-          <div>
-            <p className="text-gray-500 text-sm">Graphics</p>
+          <div className="flex gap-4">
+            <p className="text-gray-500 text-sm">Graphics:</p>
             <p className="font-medium">{computerData?.graphics}</p>
           </div>
         </div>
       </div>
-      <div className="mb-6 flex justify-between">
-        <div className="flex gap-4">
+      <div className="mb-6 flex flex-col-reverse md:flex-row gap-4 md:justify-between">
+        <div className="flex flex-col md:flex-row gap-4">
           <form className="relative max-w-md">
             <input
               type="text"
@@ -146,7 +153,7 @@ function MaintenanceByComputer() {
           Add maintenance
         </Link>
       </div>
-      <table className="w-full text-left">
+      <table className="hidden md:table w-full text-left">
         <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
           <tr>
             <th className="px-6 py-3">Computer</th>
@@ -222,6 +229,18 @@ function MaintenanceByComputer() {
           ))}
         </tbody>
       </table>
+      <div className="md:hidden space-y-4">
+        {filteredMaintenance.map((maintenance) => (
+          <MaintenanceByComputerCard
+            key={maintenance._id}
+            maintenance={maintenance}
+            user={user}
+            setSelectedMaintenance={setSelectedMaintenance}
+            setModalOpen={setModalOpen}
+            setOpenModalDetail={setOpenModalDetail}
+          />
+        ))}
+      </div>
 
       {/* Modal de confirmación */}
       <ConfirmModal
