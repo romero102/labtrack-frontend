@@ -13,19 +13,19 @@ function Login() {
   const { login, isAuthenticated, user, errors: authErrors } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
-
-  console.log(location.state);
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      if (location.state?.requiresAuth) {
-        navigate(location.state.from.pathname, {
-          replace: true,
-        });
+      // Caso QR: si venías de una ruta protegida Y esa ruta NO es "/"
+      if (
+        location.state?.requiresAuth &&
+        location.state.from.pathname !== "/"
+      ) {
+        navigate(location.state.from.pathname, { replace: true });
         return;
       }
 
+      // Caso normal: redirigir según rol
       if (user.role === "admin") {
         navigate("/computers", { replace: true });
       }

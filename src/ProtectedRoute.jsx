@@ -17,10 +17,12 @@ function ProtectedRoute({ allowedRoles }) {
       <Navigate
         to="/"
         replace
-        state={{
-          from: location,
-          requiresAuth: true,
-        }}
+        state={
+          // Solo guarda el from si NO viene de un logout (state null = logout)
+          location.state !== null
+            ? { from: location, requiresAuth: true }
+            : null
+        }
       />
     );
   }

@@ -105,21 +105,20 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const logout = async () => {
-    try {
-      await logoutRequest(); // llama al backend
-      setUser(null);
-      setIsAuthenticated(false);
-      navigate("/"); // redirige
-    } catch (error) {
-      setErrors(
-        error.response?.data?.errors?.map((err) => err.msg) || [
-          error.response?.data?.message || "unknown error",
-        ],
-      );
-
-      throw error;
-    }
-  };
+  try {
+    await logoutRequest();
+    setUser(null);
+    setIsAuthenticated(false);
+    navigate("/", { replace: true, state: null });
+  } catch (error) {
+    setErrors(
+      error.response?.data?.errors?.map((err) => err.msg) || [
+        error.response?.data?.message || "unknown error",
+      ]
+    );
+    throw error;
+  }
+};
 
   //----------------laboratories
 
