@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import {
   loginRequest,
+  getSetupStatusRequest,
+  setupAdminRequest,
   forgotPasswordRequest,
   resetPasswordRequest,
   logoutRequest,
@@ -53,8 +55,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [loadingComputers, setLoadingComputers] = useState(false);
   const [loadingLabs, setLoadingLabs] = useState(false);
-  const [loadingMaintenance, setLoadingMaintenance] = useState(false)
-  const [loadingUsers, setLoadingUsers] = useState(false)
+  const [loadingMaintenance, setLoadingMaintenance] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   const login = async (user) => {
     try {
@@ -72,10 +74,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const setupAdmin = async (user) => {
+    try {
+      const res = await setupAdminRequest(user);
+      setUser(res.data.data); // ← corregido
+      setIsAuthenticated(true);
+      navigate("/computers", { replace: true }); // ← redirigir aquí también
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+      throw error;
+    }
+  };
+
   const forgotPassword = async (email) => {
     try {
       const res = await forgotPasswordRequest(email);
-      return res
+      return res;
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -90,7 +108,7 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (token, password) => {
     try {
       const res = await resetPasswordRequest(token, password);
-      return res
+      return res;
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -105,26 +123,26 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const logout = async () => {
-  try {
-    await logoutRequest();
-    setUser(null);
-    setIsAuthenticated(false);
-    navigate("/", { replace: true, state: null });
-  } catch (error) {
-    setErrors(
-      error.response?.data?.errors?.map((err) => err.msg) || [
-        error.response?.data?.message || "unknown error",
-      ]
-    );
-    throw error;
-  }
-};
+    try {
+      await logoutRequest();
+      setUser(null);
+      setIsAuthenticated(false);
+      navigate("/", { replace: true, state: null });
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+      throw error;
+    }
+  };
 
   //----------------laboratories
 
   const getLabs = async () => {
     try {
-      setLoadingLabs(true)
+      setLoadingLabs(true);
       const res = await getLabsRequest();
       setLabs(res.data.data);
     } catch (error) {
@@ -135,9 +153,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }finally {
-    setLoadingLabs(false);
-  }
+    } finally {
+      setLoadingLabs(false);
+    }
   };
 
   const getLab = async (id) => {
@@ -168,9 +186,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }finally {
-    setLoadingLabs(false);
-  }
+    } finally {
+      setLoadingLabs(false);
+    }
   };
 
   const createLab = async (lab) => {
@@ -218,7 +236,7 @@ export const AuthProvider = ({ children }) => {
   //--------------users
   const getUsers = async () => {
     try {
-      setLoadingUsers(true)
+      setLoadingUsers(true);
       const res = await getUsersRequest();
       setUsers(res.data.data);
     } catch (error) {
@@ -229,9 +247,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }finally {
-    setLoadingUsers(false);
-  }
+    } finally {
+      setLoadingUsers(false);
+    }
   };
 
   const getUser = async (id) => {
@@ -315,7 +333,7 @@ export const AuthProvider = ({ children }) => {
 
   const getComputers = async () => {
     try {
-      setLoadingComputers(true)
+      setLoadingComputers(true);
       const res = await getComputersRequest();
       setComputers(res.data.data);
     } catch (error) {
@@ -326,9 +344,9 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }finally {
-    setLoadingComputers(false);
-  }
+    } finally {
+      setLoadingComputers(false);
+    }
   };
 
   const getComputer = async (id) => {
@@ -413,7 +431,7 @@ export const AuthProvider = ({ children }) => {
 
   const getAllMaintenance = async () => {
     try {
-      setLoadingMaintenance(true)
+      setLoadingMaintenance(true);
       const res = await getAllMaintenanceRequest();
       setMaintenance(res.data.data);
     } catch (error) {
@@ -424,21 +442,21 @@ export const AuthProvider = ({ children }) => {
       );
 
       throw error;
-    }finally {
-    setLoadingMaintenance(false);
-  }
+    } finally {
+      setLoadingMaintenance(false);
+    }
   };
 
   const getMyMaintenance = async () => {
     try {
-      setLoadingMaintenance(true)
+      setLoadingMaintenance(true);
       const res = await getMyMaintenanceRequest();
       setMaintenance(res.data.data);
     } catch (error) {
       console.log(error);
-    }finally {
-    setLoadingMaintenance(false);
-  }
+    } finally {
+      setLoadingMaintenance(false);
+    }
   };
 
   const getMaintenance = async (id) => {
@@ -514,6 +532,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkLogin = async () => {
       try {
+        // Primero verificar si el sistema está inicializado
+        const statusRes = await getSetupStatusRequest();
+        if (!statusRes.data.initialized) {
+          setIsAuthenticated(false);
+          setUser(null);
+          setLoading(false);
+          navigate("/setupadmin");
+          return;
+        }
         const res = await verifyTokenRequest();
 
         if (!res.data) {
@@ -539,6 +566,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setupAdmin,
         login,
         forgotPassword,
         resetPassword,

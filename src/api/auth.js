@@ -1,5 +1,9 @@
 import axios from "./axios"
 
+export const getSetupStatusRequest = () => axios.get(`/auth/setup-status`)
+
+export const setupAdminRequest = (user) => axios.post(`/auth/setup-admin`, user)
+
 export const loginRequest = (user) => axios.post(`/auth/login`, user)
 
 export const forgotPasswordRequest = (email) => axios.post(`/auth/forgot-password`, email)

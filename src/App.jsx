@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import Layout from "./components/Layout";
 
+import SetupAdmin from "./pages/SetupAdmin";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -30,6 +31,7 @@ function App() {
         />
         <Routes>
           {/* Rutas públicas */}
+          <Route path="/setupadmin" element={<SetupAdmin />} />
           <Route path="/" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
