@@ -14,17 +14,25 @@ import ComputerQr from "../components/ComputerQr";
 import ComputerCard from "../components/ComputerCard";
 
 function Computers() {
-  const { computers, getComputers, deleteComputer, loadingComputers } =
-    useAuth();
+  const {
+    computers,
+    getComputers,
+    deleteComputer,
+    loadingComputers,
+    getLabs,
+    labs,
+  } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedComputer, setSelectedComputer] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [noLabsModalOpen, setNoLabsModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     getComputers();
+    getLabs();
   }, []);
 
   if (loadingComputers) {
@@ -35,16 +43,33 @@ function Computers() {
     );
   }
 
+  const handleAddComputer = () => {
+    if (labs.length === 0) {
+      setNoLabsModalOpen(true);
+    } else {
+      navigate("/computerform");
+    }
+  };
+
   if (computers.length === 0)
     return (
       <div className="mb-6 flex justify-between">
         <h1>No Computers</h1>
-        <Link
-          to="/computerform"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+        <button
+          onClick={handleAddComputer}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition text-center"
         >
           Add computer
-        </Link>
+        </button>
+        <ConfirmModal
+        isOpen={noLabsModalOpen}
+        onClose={() => setNoLabsModalOpen(false)}
+        onConfirm={() => {
+          setNoLabsModalOpen(false);
+          navigate("/laboratoryform");
+        }}
+        message="No laboratories found. You need to add a laboratory first. Would you like to add one?"
+      />
       </div>
     );
 
@@ -214,6 +239,7 @@ function Computers() {
         onConfirm={handleConfirmDelete}
         message="Are you sure you want to delete this computer?"
       />
+      
       {qrModalOpen && selectedComputer && (
         <ComputerQr
           computer={selectedComputer}
