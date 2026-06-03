@@ -119,16 +119,16 @@ function Maintenance() {
         <table className="w-full text-left">
           <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
             <tr>
-              <th className="px-6 py-3">Computer</th>
-              <th className="px-6 py-3">Technician</th>
-              <th className="px-6 py-3">Category</th>
-              <th className="px-6 py-3">Nature</th>
-              <th className="px-6 py-3">Description</th>
-              <th className="px-6 py-3">Findings</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3">Date</th>
-              <th className="px-6 py-3">Detail</th>
-              <th className="px-6 py-3 text-center">Actions</th>
+              <th className="px-3 py-3">Computer</th>
+              <th className="px-3 py-3">Technician</th>
+              <th className="px-3 py-3">Category</th>
+              <th className="px-3 py-3">Nature</th>
+              <th className="px-3 py-3">Description</th>
+              <th className="px-3 py-3">Findings</th>
+              <th className="px-3 py-3">Status</th>
+              <th className="px-3 py-3">Date</th>
+              <th className="px-3 py-3">Detail</th>
+              <th className="px-3 py-3 text-center">Actions</th>
             </tr>
           </thead>
 
@@ -138,21 +138,21 @@ function Maintenance() {
                 key={maintenance._id}
                 className="border-t hover:bg-gray-50 transition"
               >
-                <td className="px-6 py-4">{maintenance.computer?.code}</td>
-                <td className="px-6 py-4">{maintenance.technician?.name}</td>
-                <td className="px-6 py-4">{maintenance.category}</td>
-                <td className="px-6 py-4">{maintenance.nature}</td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">{maintenance.computer?.code}</td>
+                <td className="px-3 py-4">{maintenance.technician?.name}</td>
+                <td className="px-3 py-4">{maintenance.category}</td>
+                <td className="px-3 py-4">{maintenance.nature}</td>
+                <td className="px-3 py-4">
                   {maintenance.description.slice(0, 8)}...
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">
                   {maintenance.findings.slice(0, 8)}...
                 </td>
-                <td className="px-6 py-4">{maintenance.status}</td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">{maintenance.status}</td>
+                <td className="px-3 py-4">
                   {new Date(maintenance.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">
                   <div className="flex items-center justify-center">
                     <button
                       className="text-amber-600 hover:text-amber-800 transition"
@@ -165,7 +165,7 @@ function Maintenance() {
                     </button>
                   </div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">
                   <div className="flex justify-center gap-4">
                     <Link
                       to={`/maintenanceform/${maintenance._id}`}

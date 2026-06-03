@@ -71,7 +71,7 @@ function Login() {
                 ? "border-red-500 focus:ring-red-300"
                 : "border-gray-300 focus:ring-blue-300"
             }`}
-            placeholder="tu@email.com"
+            placeholder="your@email.com"
           />
           {errors.email && (
             <p className="text-red-500 text-sm">{errors.email.message}</p>

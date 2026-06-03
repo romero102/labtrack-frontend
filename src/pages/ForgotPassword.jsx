@@ -17,7 +17,7 @@ function ForgotPassword() {
 
     alert("Recovery email sent");
 
-    navigate("/login");
+    navigate("/");
   });
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100 px-4">
@@ -48,7 +48,7 @@ function ForgotPassword() {
                 ? "border-red-500 focus:ring-red-300"
                 : "border-gray-300 focus:ring-blue-300"
             }`}
-            placeholder="tu@email.com"
+            placeholder="your@email.com"
           />
           {errors.email && (
             <p className="text-red-500 text-sm">{errors.email.message}</p>

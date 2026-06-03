@@ -25,7 +25,7 @@ function ResetPassword() {
       password: values.password,
     });
 
-    navigate("/login");
+    navigate("/");
   });
 
   return (

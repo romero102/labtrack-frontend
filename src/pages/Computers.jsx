@@ -26,6 +26,7 @@ function Computers() {
   const [selectedComputer, setSelectedComputer] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLab, setSelectedLab] = useState("");
   const [noLabsModalOpen, setNoLabsModalOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -62,14 +63,14 @@ function Computers() {
           Add computer
         </button>
         <ConfirmModal
-        isOpen={noLabsModalOpen}
-        onClose={() => setNoLabsModalOpen(false)}
-        onConfirm={() => {
-          setNoLabsModalOpen(false);
-          navigate("/laboratoryform");
-        }}
-        message="No laboratories found. You need to add a laboratory first. Would you like to add one?"
-      />
+          isOpen={noLabsModalOpen}
+          onClose={() => setNoLabsModalOpen(false)}
+          onConfirm={() => {
+            setNoLabsModalOpen(false);
+            navigate("/laboratoryform");
+          }}
+          message="No laboratories found. You need to add a laboratory first. Would you like to add one?"
+        />
       </div>
     );
 
@@ -97,9 +98,16 @@ function Computers() {
 
   const filteredComputers = [...computers]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .filter((computer) =>
-      computer.code.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    .filter((computer) => {
+      const matchesCode = computer.code
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+      const matchesLab =
+        selectedLab === "" || computer.lab?._id === selectedLab;
+
+      return matchesCode && matchesLab;
+    });
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -117,6 +125,21 @@ function Computers() {
           />
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
         </form>
+        <div className="w-full md:max-w-md">
+          <select
+            value={selectedLab}
+            onChange={(e) => setSelectedLab(e.target.value)}
+            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All laboratories</option>
+
+            {labs.map((lab) => (
+              <option key={lab._id} value={lab._id}>
+                {lab.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <Link
           to="/computerform"
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition text-center"
@@ -128,15 +151,15 @@ function Computers() {
         <table className="w-full text-left">
           <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
             <tr>
-              <th className="px-6 py-3">Code</th>
-              <th className="px-6 py-3">Laboratory</th>
-              <th className="px-6 py-3">Processor</th>
-              <th className="px-6 py-3">Ram</th>
-              <th className="px-6 py-3">Storage</th>
-              <th className="px-6 py-3">Graphics</th>
-              <th className="px-6 py-3">Qr</th>
-              <th className="px-6 py-3">Maintenance</th>
-              <th className="px-6 py-3 text-center">Actions</th>
+              <th className="px-3 py-3">Code</th>
+              <th className="px-3 py-3">Laboratory</th>
+              <th className="px-3 py-3">Processor</th>
+              <th className="px-3 py-3">Ram</th>
+              <th className="px-3 py-3">Storage</th>
+              <th className="px-3 py-3">Graphics</th>
+              <th className="px-3 py-3">Qr</th>
+              <th className="px-3 py-3">Maintenance</th>
+              <th className="px-3 py-3 text-center">Actions</th>
             </tr>
           </thead>
 
@@ -146,13 +169,13 @@ function Computers() {
                 key={computer._id}
                 className="border-t hover:bg-gray-50 transition"
               >
-                <td className="px-6 py-4">{computer.code}</td>
-                <td className="px-6 py-4">{computer.lab?.name}</td>
-                <td className="px-6 py-4">{computer.processor}</td>
-                <td className="px-6 py-4">{computer.ram}</td>
-                <td className="px-6 py-4">{computer.storage}</td>
-                <td className="px-6 py-4">{computer.graphics}</td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">{computer.code}</td>
+                <td className="px-3 py-4">{computer.lab?.name}</td>
+                <td className="px-3 py-4">{computer.processor}</td>
+                <td className="px-3 py-4">{computer.ram}</td>
+                <td className="px-3 py-4">{computer.storage}</td>
+                <td className="px-3 py-4">{computer.graphics}</td>
+                <td className="px-3 py-4">
                   <div className="flex gap-4">
                     <button
                       className="text-green-600 hover:text-green-800 transition"
@@ -176,7 +199,7 @@ function Computers() {
                     </button>
                   </div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">
                   <div className="flex gap-4">
                     <Link
                       to={`/maintenanceform?computerId=${computer._id}`}
@@ -194,7 +217,7 @@ function Computers() {
                     </button>
                   </div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-4">
                   <div className="flex justify-center gap-4">
                     <Link
                       to={`/computerform/${computer._id}`}
@@ -239,7 +262,7 @@ function Computers() {
         onConfirm={handleConfirmDelete}
         message="Are you sure you want to delete this computer?"
       />
-      
+
       {qrModalOpen && selectedComputer && (
         <ComputerQr
           computer={selectedComputer}
