@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -13,11 +14,17 @@ function ForgotPassword() {
   const { forgotPassword, errors: authErrors } = useAuth();
 
   const onSubmit = handleSubmit(async (values) => {
-    await forgotPassword(values);
+    try {
+      await forgotPassword(values);
 
-    alert("Recovery email sent");
+      toast.success("Recovery email sent successfully");
 
-    navigate("/");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
   });
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100 px-4">
