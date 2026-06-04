@@ -69,7 +69,7 @@ function MaintenanceByComputer() {
       <div className="mb-6 flex justify-between">
         <h1>There is no maintenance for that computer.</h1>
         <Link
-          to={`/maintenanceform?computerId=${computerData?._id}`}
+          to={`/maintenanceform?computerId=${params.id}`}
           className="order-1 md:order-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition text-center"
         >
           Add maintenance
