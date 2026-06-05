@@ -15,6 +15,9 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("AUTH:", isAuthenticated);
+  console.log("USER:", user);
+  console.log("STATE:", location.state);
   if (isAuthenticated && user) {
 
     // Caso logout
