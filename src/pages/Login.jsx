@@ -10,34 +10,49 @@ function Login() {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const { login, isAuthenticated, user, errors: authErrors } = useAuth();
+  const {
+    login,
+    isAuthenticated,
+    user,
+    isLoggingOut,
+    setIsLoggingOut,
+    errors: authErrors,
+  } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("AUTH:", isAuthenticated);
-    console.log("USER:", user);
-    console.log("STATE:", location.state);
-    console.log("FROM PATH:", location.state?.from?.pathname);
-    if (isAuthenticated && user) {
-      const fromPath = location.state?.from?.pathname;
+  if (isAuthenticated && user) {
+    const fromPath = location.state?.from?.pathname;
 
-      // Solo redirigir automáticamente si viene de un QR
-      if (fromPath?.startsWith("/maintenance/")) {
-        navigate(fromPath, { replace: true });
-        return;
-      }
-
-      // Login normal
-      if (user.role === "admin") {
-        navigate("/computers", { replace: true });
-      }
-
-      if (user.role === "technician") {
-        navigate("/mylaboratories", { replace: true });
-      }
+    // Solo volver al QR si NO venimos de logout
+    if (
+      !isLoggingOut &&
+      fromPath?.startsWith("/maintenance/")
+    ) {
+      navigate(fromPath, { replace: true });
+      return;
     }
-  }, [isAuthenticated, user, location.state, navigate]);
+
+    // Consumir el flag
+    setIsLoggingOut(false);
+
+    if (user.role === "admin") {
+      navigate("/computers", { replace: true });
+    }
+
+    if (user.role === "technician") {
+      navigate("/mylaboratories", { replace: true });
+    }
+  }
+}, [
+  isAuthenticated,
+  user,
+  location.state,
+  navigate,
+  isLoggingOut,
+  setIsLoggingOut,
+]);
 
   const [showPassword, setShowPassword] = useState(false);
 

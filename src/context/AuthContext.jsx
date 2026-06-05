@@ -57,6 +57,7 @@ export const AuthProvider = ({ children }) => {
   const [loadingLabs, setLoadingLabs] = useState(false);
   const [loadingMaintenance, setLoadingMaintenance] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const login = async (user) => {
     try {
@@ -124,15 +125,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      setIsLoggingOut(true);
+
       await logoutRequest();
+
       setUser(null);
       setIsAuthenticated(false);
-      navigate("/", {
-        replace: true,
-        state: {
-          logout: true,
-        },
-      });
+
+      navigate("/", { replace: true });
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
@@ -611,6 +611,8 @@ export const AuthProvider = ({ children }) => {
         createMaintenance,
         updateMaintenance,
         deleteMaintenance,
+        isLoggingOut,
+        setIsLoggingOut,
       }}
     >
       {children}
