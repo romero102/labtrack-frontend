@@ -12,18 +12,35 @@ function ProtectedRoute({ allowedRoles }) {
       </div>
     );
 
+    /*
+
   if (!isAuthenticated) {
     return (
       <Navigate
         to="/"
         replace
-        state={{
-          from: location,
-          requiresAuth: true,
-        }}
+        state={
+          // Solo guarda el from si NO viene de un logout (state null = logout)
+          location.state !== null
+            ? { from: location, requiresAuth: true }
+            : null
+        }
       />
     );
-  }
+  }*/
+
+    if (!isAuthenticated) {
+  return (
+    <Navigate
+      to="/"
+      replace
+      state={{
+        from: location,
+        requiresAuth: true,
+      }}
+    />
+  );
+}
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;

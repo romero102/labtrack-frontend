@@ -50,6 +50,8 @@ function Login() {
       <div className="bg-yellow-100 p-2 mb-4 text-xs break-all">
         <p>State: {JSON.stringify(location.state)}</p>
         <p>From Path: {location.state?.from?.pathname}</p>
+        <p>Logout: {String(location.state?.logout)}</p>
+        <p>From: {location.state?.from?.pathname}</p>
       </div>
       {authErrors.length > 0 && (
         <div className="w-full max-w-md space-y-2 mb-4">
