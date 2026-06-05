@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 
@@ -38,6 +38,8 @@ function Login() {
       }
     }
   }, [isAuthenticated, user, location.state, navigate]);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = handleSubmit(async (values) => {
     login(values);
