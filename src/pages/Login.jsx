@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
 
@@ -20,24 +20,11 @@ function Login() {
     console.log("STATE:", location.state);
     console.log("FROM PATH:", location.state?.from?.pathname);
     if (isAuthenticated && user) {
-      // Caso logout
-      if (location.state?.logout) {
-        if (user.role === "admin") {
-          navigate("/computers", { replace: true });
-        }
+      const fromPath = location.state?.from?.pathname;
 
-        if (user.role === "technician") {
-          navigate("/mylaboratories", { replace: true });
-        }
-
-        return;
-      }
-
-      // Caso QR o acceso a ruta protegida
-      if (location.state?.requiresAuth) {
-        navigate(location.state.from.pathname, {
-          replace: true,
-        });
+      // Solo redirigir automáticamente si viene de un QR
+      if (fromPath?.startsWith("/maintenance/")) {
+        navigate(fromPath, { replace: true });
         return;
       }
 
@@ -51,8 +38,6 @@ function Login() {
       }
     }
   }, [isAuthenticated, user, location.state, navigate]);
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = handleSubmit(async (values) => {
     login(values);
