@@ -127,7 +127,12 @@ export const AuthProvider = ({ children }) => {
       await logoutRequest();
       setUser(null);
       setIsAuthenticated(false);
-      navigate("/", { replace: true, state: null });
+      navigate("/", {
+        replace: true,
+        state: {
+          logout: true,
+        },
+      });
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [

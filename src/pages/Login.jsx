@@ -15,18 +15,10 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("LOCATION STATE:", location.state);
-    if (isAuthenticated && user) {
-      // Caso QR: si venías de una ruta protegida Y esa ruta NO es "/"
-      if (
-        location.state?.requiresAuth &&
-        location.state.from.pathname !== "/"
-      ) {
-        navigate(location.state.from.pathname, { replace: true });
-        return;
-      }
+  if (isAuthenticated && user) {
 
-      // Caso normal: redirigir según rol
+    // Caso logout
+    if (location.state?.logout) {
       if (user.role === "admin") {
         navigate("/computers", { replace: true });
       }
@@ -34,8 +26,28 @@ function Login() {
       if (user.role === "technician") {
         navigate("/mylaboratories", { replace: true });
       }
+
+      return;
     }
-  }, [isAuthenticated, user, location.state, navigate]);
+
+    // Caso QR o acceso a ruta protegida
+    if (location.state?.requiresAuth) {
+      navigate(location.state.from.pathname, {
+        replace: true,
+      });
+      return;
+    }
+
+    // Login normal
+    if (user.role === "admin") {
+      navigate("/computers", { replace: true });
+    }
+
+    if (user.role === "technician") {
+      navigate("/mylaboratories", { replace: true });
+    }
+  }
+}, [isAuthenticated, user, location.state, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
