@@ -16,12 +16,32 @@ function Login() {
 
   useEffect(() => {
     console.log("AUTH:", isAuthenticated);
-  console.log("USER:", user);
-  console.log("STATE:", location.state);
-  if (isAuthenticated && user) {
+    console.log("USER:", user);
+    console.log("STATE:", location.state);
+    console.log("FROM PATH:", location.state?.from?.pathname);
+    if (isAuthenticated && user) {
+      // Caso logout
+      if (location.state?.logout) {
+        if (user.role === "admin") {
+          navigate("/computers", { replace: true });
+        }
 
-    // Caso logout
-    if (location.state?.logout) {
+        if (user.role === "technician") {
+          navigate("/mylaboratories", { replace: true });
+        }
+
+        return;
+      }
+
+      // Caso QR o acceso a ruta protegida
+      if (location.state?.requiresAuth) {
+        navigate(location.state.from.pathname, {
+          replace: true,
+        });
+        return;
+      }
+
+      // Login normal
       if (user.role === "admin") {
         navigate("/computers", { replace: true });
       }
@@ -29,28 +49,8 @@ function Login() {
       if (user.role === "technician") {
         navigate("/mylaboratories", { replace: true });
       }
-
-      return;
     }
-
-    // Caso QR o acceso a ruta protegida
-    if (location.state?.requiresAuth) {
-      navigate(location.state.from.pathname, {
-        replace: true,
-      });
-      return;
-    }
-
-    // Login normal
-    if (user.role === "admin") {
-      navigate("/computers", { replace: true });
-    }
-
-    if (user.role === "technician") {
-      navigate("/mylaboratories", { replace: true });
-    }
-  }
-}, [isAuthenticated, user, location.state, navigate]);
+  }, [isAuthenticated, user, location.state, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -60,7 +60,10 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100 px-4">
-      <p>State: {JSON.stringify(location.state)}</p>
+      <div className="bg-yellow-100 p-2 mb-4 text-xs break-all">
+        <p>State: {JSON.stringify(location.state)}</p>
+        <p>From Path: {location.state?.from?.pathname}</p>
+      </div>
       {authErrors.length > 0 && (
         <div className="w-full max-w-md space-y-2 mb-4">
           {authErrors.map((error, i) => (
