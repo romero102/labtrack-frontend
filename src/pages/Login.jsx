@@ -45,6 +45,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100 px-4">
+      <p>State: {JSON.stringify(location.state)}</p>
       {authErrors.length > 0 && (
         <div className="w-full max-w-md space-y-2 mb-4">
           {authErrors.map((error, i) => (

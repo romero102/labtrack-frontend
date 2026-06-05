@@ -12,6 +12,8 @@ function ProtectedRoute({ allowedRoles }) {
       </div>
     );
 
+    /*
+
   if (!isAuthenticated) {
     return (
       <Navigate
@@ -25,7 +27,20 @@ function ProtectedRoute({ allowedRoles }) {
         }
       />
     );
-  }
+  }*/
+
+    if (!isAuthenticated) {
+  return (
+    <Navigate
+      to="/"
+      replace
+      state={{
+        from: location,
+        requiresAuth: true,
+      }}
+    />
+  );
+}
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
