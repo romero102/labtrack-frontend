@@ -15,6 +15,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("LOCATION STATE:", location.state);
     if (isAuthenticated && user) {
       // Caso QR: si venías de una ruta protegida Y esa ruta NO es "/"
       if (
