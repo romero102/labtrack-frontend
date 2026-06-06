@@ -21,41 +21,19 @@ function Login() {
 
       if (redirectPath) {
         sessionStorage.removeItem("redirectAfterLogin");
-
-        navigate(redirectPath, {
-          replace: true,
-        });
-
-        console.log(
-          "BEFORE REMOVE:",
-          sessionStorage.getItem("redirectAfterLogin"),
-        );
-
-        sessionStorage.removeItem("redirectAfterLogin");
-
-        console.log(
-          "AFTER REMOVE:",
-          sessionStorage.getItem("redirectAfterLogin"),
-        );
-
-        console.log(
-          "SESSION REDIRECT:",
-          sessionStorage.getItem("redirectAfterLogin"),
-        );
-
+        navigate(redirectPath, { replace: true });
         return;
       }
 
+      // Limpieza extra por si quedó algo
+      sessionStorage.removeItem("redirectAfterLogin");
+
       if (user.role === "admin") {
-        navigate("/computers", {
-          replace: true,
-        });
+        navigate("/computers", { replace: true });
       }
 
       if (user.role === "technician") {
-        navigate("/mylaboratories", {
-          replace: true,
-        });
+        navigate("/mylaboratories", { replace: true });
       }
     }
   }, [isAuthenticated, user, navigate]);

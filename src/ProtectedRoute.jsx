@@ -12,31 +12,13 @@ function ProtectedRoute({ allowedRoles }) {
       </div>
     );
 
-  /*if (!isAuthenticated) {
+  if (!isAuthenticated) {
     if (location.pathname.startsWith("/maintenance/")) {
       sessionStorage.setItem("redirectAfterLogin", location.pathname);
     }
 
     return <Navigate to="/" replace />;
-  }*/
-
-    if (!isAuthenticated) {
-  if (
-    location.pathname.startsWith("/maintenance/")
-  ) {
-    console.log(
-      "GUARDANDO REDIRECT:",
-      location.pathname
-    );
-
-    sessionStorage.setItem(
-      "redirectAfterLogin",
-      location.pathname
-    );
   }
-
-  return <Navigate to="/" replace />;
-}
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
