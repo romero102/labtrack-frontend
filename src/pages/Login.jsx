@@ -10,49 +10,38 @@ function Login() {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const {
-    login,
-    isAuthenticated,
-    user,
-    isLoggingOut,
-    setIsLoggingOut,
-    errors: authErrors,
-  } = useAuth();
+  const { login, isAuthenticated, user, errors: authErrors } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-  if (isAuthenticated && user) {
-    const fromPath = location.state?.from?.pathname;
+    if (isAuthenticated && user) {
+      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
-    // Solo volver al QR si NO venimos de logout
-    if (
-      !isLoggingOut &&
-      fromPath?.startsWith("/maintenance/")
-    ) {
-      navigate(fromPath, { replace: true });
-      return;
+      if (redirectPath) {
+        sessionStorage.removeItem("redirectAfterLogin");
+
+        navigate(redirectPath, {
+          replace: true,
+        });
+
+        return;
+      }
+
+      if (user.role === "admin") {
+        navigate("/computers", {
+          replace: true,
+        });
+      }
+
+      if (user.role === "technician") {
+        navigate("/mylaboratories", {
+          replace: true,
+        });
+      }
     }
-
-    // Consumir el flag
-    setIsLoggingOut(false);
-
-    if (user.role === "admin") {
-      navigate("/computers", { replace: true });
-    }
-
-    if (user.role === "technician") {
-      navigate("/mylaboratories", { replace: true });
-    }
-  }
-}, [
-  isAuthenticated,
-  user,
-  location.state,
-  navigate,
-  isLoggingOut,
-  setIsLoggingOut,
-]);
+  }, [isAuthenticated, user, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -67,6 +56,10 @@ function Login() {
         <p>From Path: {location.state?.from?.pathname}</p>
         <p>Logout: {String(location.state?.logout)}</p>
         <p>From: {location.state?.from?.pathname}</p>
+        <p>
+          Redirect:
+          {sessionStorage.getItem("redirectAfterLogin")}
+        </p>
       </div>
       {authErrors.length > 0 && (
         <div className="w-full max-w-md space-y-2 mb-4">

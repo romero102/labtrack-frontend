@@ -12,35 +12,13 @@ function ProtectedRoute({ allowedRoles }) {
       </div>
     );
 
-    /*
-
   if (!isAuthenticated) {
-    return (
-      <Navigate
-        to="/"
-        replace
-        state={
-          // Solo guarda el from si NO viene de un logout (state null = logout)
-          location.state !== null
-            ? { from: location, requiresAuth: true }
-            : null
-        }
-      />
-    );
-  }*/
+    if (location.pathname.startsWith("/maintenance/")) {
+      sessionStorage.setItem("redirectAfterLogin", location.pathname);
+    }
 
-    if (!isAuthenticated) {
-  return (
-    <Navigate
-      to="/"
-      replace
-      state={{
-        from: location,
-        requiresAuth: true,
-      }}
-    />
-  );
-}
+    return <Navigate to="/" replace />;
+  }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
