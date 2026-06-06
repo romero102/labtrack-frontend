@@ -26,6 +26,23 @@ function Login() {
           replace: true,
         });
 
+        console.log(
+          "BEFORE REMOVE:",
+          sessionStorage.getItem("redirectAfterLogin"),
+        );
+
+        sessionStorage.removeItem("redirectAfterLogin");
+
+        console.log(
+          "AFTER REMOVE:",
+          sessionStorage.getItem("redirectAfterLogin"),
+        );
+
+        console.log(
+          "SESSION REDIRECT:",
+          sessionStorage.getItem("redirectAfterLogin"),
+        );
+
         return;
       }
 
