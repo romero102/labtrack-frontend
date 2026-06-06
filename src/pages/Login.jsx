@@ -16,6 +16,13 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+  // Al montar el Login, si no venimos de un QR, limpiar redirect pendiente
+  if (!location.state?.fromQR) {
+    sessionStorage.removeItem("redirectAfterLogin");
+  }
+}, []);
+
+useEffect(() => {
   if (isAuthenticated && user) {
     const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
@@ -25,7 +32,6 @@ function Login() {
       return;
     }
 
-    // Flujo normal por rol
     if (user.role === "admin") {
       navigate("/computers", { replace: true });
     }

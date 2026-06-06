@@ -20,7 +20,7 @@ function ProtectedRoute({ allowedRoles }) {
     }
   }
 
-  return <Navigate to="/" replace />;
+  return <Navigate to="/" replace state={{ fromQR: true }} />;
 }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
