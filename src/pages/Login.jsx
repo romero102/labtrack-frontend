@@ -16,27 +16,25 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
+  if (isAuthenticated && user) {
+    const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
-      if (redirectPath) {
-        sessionStorage.removeItem("redirectAfterLogin");
-        navigate(redirectPath, { replace: true });
-        return;
-      }
-
-      // Limpieza extra por si quedó algo
+    if (redirectPath) {
       sessionStorage.removeItem("redirectAfterLogin");
-
-      if (user.role === "admin") {
-        navigate("/computers", { replace: true });
-      }
-
-      if (user.role === "technician") {
-        navigate("/mylaboratories", { replace: true });
-      }
+      navigate(redirectPath, { replace: true });
+      return;
     }
-  }, [isAuthenticated, user, navigate]);
+
+    // Flujo normal por rol
+    if (user.role === "admin") {
+      navigate("/computers", { replace: true });
+    }
+
+    if (user.role === "technician") {
+      navigate("/mylaboratories", { replace: true });
+    }
+  }
+}, [isAuthenticated, user, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
