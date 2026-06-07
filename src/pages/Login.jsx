@@ -16,15 +16,10 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Limpiar el state del router para que no persista en navegaciones futuras
-    if (location.state?.fromQR) {
-      window.history.replaceState({}, "");
-    }
-
-    if (!location.state?.fromQR) {
-      sessionStorage.removeItem("redirectAfterLogin");
-    }
-  }, []);
+  if (!location.state?.fromQR) {
+    sessionStorage.removeItem("redirectAfterLogin");
+  }
+}, []);
 
   useEffect(() => {
     if (isAuthenticated && user) {

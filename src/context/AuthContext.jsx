@@ -123,25 +123,24 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const logout = async () => {
-  try {
-    await logoutRequest();
+    try {
+      await logoutRequest();
 
-    // Limpieza primero
-    sessionStorage.removeItem("redirectAfterLogin");
+      sessionStorage.removeItem("redirectAfterLogin");
 
-    setUser(null);
-    setIsAuthenticated(false);
+      setUser(null);
+      setIsAuthenticated(false);
 
-    navigate("/", { replace: true });
-  } catch (error) {
-    setErrors(
-      error.response?.data?.errors?.map((err) => err.msg) || [
-        error.response?.data?.message || "unknown error",
-      ],
-    );
-    throw error;
-  }
-};
+      navigate("/", { replace: true, state: null }); // ← limpiar state explícitamente
+    } catch (error) {
+      setErrors(
+        error.response?.data?.errors?.map((err) => err.msg) || [
+          error.response?.data?.message || "unknown error",
+        ],
+      );
+      throw error;
+    }
+  };
 
   //----------------laboratories
 
