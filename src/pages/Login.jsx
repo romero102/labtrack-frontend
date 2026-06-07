@@ -16,31 +16,35 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  // Al montar el Login, si no venimos de un QR, limpiar redirect pendiente
-  if (!location.state?.fromQR) {
-    sessionStorage.removeItem("redirectAfterLogin");
-  }
-}, []);
+    // Limpiar el state del router para que no persista en navegaciones futuras
+    if (location.state?.fromQR) {
+      window.history.replaceState({}, "");
+    }
 
-useEffect(() => {
-  if (isAuthenticated && user) {
-    const redirectPath = sessionStorage.getItem("redirectAfterLogin");
-
-    if (redirectPath) {
+    if (!location.state?.fromQR) {
       sessionStorage.removeItem("redirectAfterLogin");
-      navigate(redirectPath, { replace: true });
-      return;
     }
+  }, []);
 
-    if (user.role === "admin") {
-      navigate("/computers", { replace: true });
-    }
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
-    if (user.role === "technician") {
-      navigate("/mylaboratories", { replace: true });
+      if (redirectPath) {
+        sessionStorage.removeItem("redirectAfterLogin");
+        navigate(redirectPath, { replace: true });
+        return;
+      }
+
+      if (user.role === "admin") {
+        navigate("/computers", { replace: true });
+      }
+
+      if (user.role === "technician") {
+        navigate("/mylaboratories", { replace: true });
+      }
     }
-  }
-}, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
