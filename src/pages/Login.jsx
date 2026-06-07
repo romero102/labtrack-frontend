@@ -16,12 +16,6 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.state?.fromQR) {
-      sessionStorage.removeItem("redirectAfterLogin");
-    }
-  }, []);
-
-  useEffect(() => {
     if (isAuthenticated && user) {
       const redirectPath = sessionStorage.getItem("redirectAfterLogin");
 
@@ -56,10 +50,6 @@ function Login() {
         <p>From Path: {location.state?.from?.pathname}</p>
         <p>Logout: {String(location.state?.logout)}</p>
         <p>From: {location.state?.from?.pathname}</p>
-        <p>
-          Redirect:
-          {sessionStorage.getItem("redirectAfterLogin")}
-        </p>
         <p>sessionStorage keys: {Object.keys(sessionStorage).join(", ")}</p>
       </div>
       <button

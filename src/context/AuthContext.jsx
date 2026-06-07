@@ -127,11 +127,12 @@ export const AuthProvider = ({ children }) => {
       await logoutRequest();
 
       sessionStorage.removeItem("redirectAfterLogin");
-
       setUser(null);
       setIsAuthenticated(false);
 
-      navigate("/", { replace: true, state: null }); // ← limpiar state explícitamente
+      // Limpiar el history state del navegador explícitamente
+      window.history.replaceState(null, "");
+      navigate("/", { replace: true, state: null });
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [
