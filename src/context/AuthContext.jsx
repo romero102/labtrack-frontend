@@ -130,9 +130,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
 
-      // Limpiar el history state del navegador explícitamente
-      window.history.replaceState(null, "");
-      navigate("/", { replace: true, state: null });
+      navigate("/", { replace: true });
     } catch (error) {
       setErrors(
         error.response?.data?.errors?.map((err) => err.msg) || [

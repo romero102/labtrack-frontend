@@ -13,17 +13,13 @@ function ProtectedRoute({ allowedRoles }) {
     );
 
   if (!isAuthenticated) {
-    if (location.pathname.startsWith("/maintenance/")) {
-      if (!sessionStorage.getItem("redirectAfterLogin")) {
-        sessionStorage.setItem("redirectAfterLogin", location.pathname);
-      }
-      return <Navigate to="/" replace state={{ fromQR: true }} />;
-      //     ↑ solo cuando ES maintenance
+  if (location.pathname.startsWith("/maintenance/")) {
+    if (!sessionStorage.getItem("redirectAfterLogin")) {
+      sessionStorage.setItem("redirectAfterLogin", location.pathname);
     }
-
-    return <Navigate to="/" replace />;
-    // ↑ cualquier otra ruta protegida, sin state
   }
+  return <Navigate to="/" replace />; // sin state
+}
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
