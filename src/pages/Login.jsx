@@ -43,24 +43,6 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center flex-col bg-gray-100 px-4">
-      <div className="bg-yellow-100 p-2 mb-4 text-xs break-all">
-        <p>State: {JSON.stringify(location.state)}</p>
-        <p>fromQR: {String(location.state?.fromQR)}</p>
-        <p>Redirect: {sessionStorage.getItem("redirectAfterLogin")}</p>
-        <p>From Path: {location.state?.from?.pathname}</p>
-        <p>Logout: {String(location.state?.logout)}</p>
-        <p>From: {location.state?.from?.pathname}</p>
-        <p>sessionStorage keys: {Object.keys(sessionStorage).join(", ")}</p>
-      </div>
-      <button
-        onClick={() => {
-          sessionStorage.clear();
-          window.location.reload();
-        }}
-        className="bg-red-200 text-xs p-1 mb-2"
-      >
-        LIMPIAR SESION Y RECARGAR
-      </button>
       {authErrors.length > 0 && (
         <div className="w-full max-w-md space-y-2 mb-4">
           {authErrors.map((error, i) => (

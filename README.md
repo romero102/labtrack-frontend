@@ -5,6 +5,13 @@ A web-based system for managing computer maintenance in university computer labs
 🔗 **Live Demo:** [labtrack-frontend-lime.vercel.app](https://labtrack-frontend-lime.vercel.app)
 📦 **Backend Repo:** [github.com/romero102/labtrack-backend](https://github.com/romero102/labtrack-backend)
 
+**Demo credentials:**
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@test.com | 123456 |
+| Technician | technician1@test.com | Technician1 |
+
 ---
 
 ## The Problem
@@ -23,8 +30,10 @@ LabTrack was built to solve that: a digital system to register every computer's 
 - 🔧 **Maintenance tracking** — Log preventive, corrective, and logical maintenance per computer
 - 📱 **QR Code per computer** — Scan to instantly access a computer's profile and history
 - 📊 **Maintenance ownership** — Technicians can only edit/delete their own records
-- 🔑 **Password recovery** — Email-based reset flow with expiring tokens
+- 🔑 **Password recovery** — Email-based reset flow with expiring tokens via Resend
 - 🚫 **Soft delete for users** — Deactivate accounts without losing maintenance history
+- 🔍 **Search & filters** — Filter labs by name, computers by code or lab, maintenance by computer, technician, or date
+- ⚙️ **First run setup** — Automatic redirect to create the first admin when no users exist
 
 ---
 
@@ -45,7 +54,8 @@ LabTrack was built to solve that: a digital system to register every computer's 
 - MongoDB + Mongoose
 - JSON Web Tokens (JWT)
 - Bcrypt
-- Nodemailer
+- Resend (email)
+- Cloudinary (QR code storage)
 - QRCode
 
 ---
@@ -62,8 +72,8 @@ Users
 **Admin** can manage everything: users, labs, computers, and all maintenance records.
 
 **Technician** can:
-- View all labs, computers, users, and maintenance records
-- Create maintenance records for assigned computers
+- View only the labs, computers, and maintenance records assigned to them
+- Create maintenance records for their assigned computers
 - Edit and delete only their own maintenance records
 
 ---
@@ -73,6 +83,8 @@ Users
 ### Prerequisites
 - Node.js v18+
 - MongoDB (local or Atlas)
+- Cloudinary account (free tier)
+- Resend account (free tier)
 
 ### Backend Setup
 
@@ -85,16 +97,15 @@ npm install
 Create a `.env` file based on `.env.example`:
 
 ```env
-MONGODB_URI=your_mongodb_connection_string
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>
 JWT_SECRET=your_jwt_secret
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_email_app_password
-CLOUDINARY_KEY=your_cloudinary_key
 CLOUDINARY_NAME=your_cloudinary_name
+CLOUDINARY_KEY=your_cloudinary_key
 CLOUDINARY_SECRET=your_cloudinary_secret
-PORT=5000
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
 ```
 
 ```bash
@@ -107,18 +118,21 @@ npm run dev
 git clone https://github.com/romero102/labtrack-frontend.git
 cd labtrack-frontend
 npm install
-npm run dev
 ```
+
 Create a `.env` file based on `.env.example`:
 
 ```env
-VITE_INSTALL_TOKEN=your_token
-VITE_API_URL=your_api_url
+VITE_API_URL=//localhost:5000/api
+```
+
+```bash
+npm run dev
 ```
 
 ### First Run
 
-On first launch, the system will prompt you to create the initial admin account. After that, only admins can create new users.
+On first launch, the system detects there are no users and redirects you to the **Setup page** to create the first Admin account. After that, only admins can create new users.
 
 ---
 
@@ -136,8 +150,8 @@ On first launch, the system will prompt you to create the initial admin account.
 
 ## Author
 
-**Ilsen Romero Caraballo** — Full Stack Developer (MERN)
-[GitHub](https://github.com/romero102)
+**Ilsen Romero** — Full Stack Developer (MERN)
+[GitHub](https://github.com/romero102) · [Portfolio](https://romero102.github.io/portfolio/) · [LinkedIn](https://www.linkedin.com/in/ilsen-romero)
 
 ---
 
