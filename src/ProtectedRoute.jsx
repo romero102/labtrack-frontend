@@ -14,11 +14,13 @@ function ProtectedRoute({ allowedRoles }) {
 
   if (!isAuthenticated) {
   if (location.pathname.startsWith("/maintenance/")) {
-    if (!sessionStorage.getItem("redirectAfterLogin")) {
+    const isLogout = sessionStorage.getItem("isLogout");
+    if (!isLogout && !sessionStorage.getItem("redirectAfterLogin")) {
       sessionStorage.setItem("redirectAfterLogin", location.pathname);
     }
+    sessionStorage.removeItem("isLogout"); // limpiar la marca
   }
-  return <Navigate to="/" replace />; // sin state
+  return <Navigate to="/" replace />;
 }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
